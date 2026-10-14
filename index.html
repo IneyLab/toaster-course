@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тостер без страха — интерактивный курс</title>
+  <meta name="description" content="Интерактивный курс: как безопасно пользоваться тостером и приготовить идеальный тост за несколько минут.">
+  <meta name="theme-color" content="#131F5D">
+
+  <link rel="icon" href="assets/icons/crumb.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Обычные скрипты (не ES-модули — курс открывается с file://). Порядок важен:
+       core → scorm → state → interactives/*.js → main -->
+  <script defer src="js/core.js"></script>
+  <script defer src="js/scorm.js"></script>
+  <script defer src="js/state.js"></script>
+  <!-- интерактивы: <script defer src="js/interactives/<name>.js"></script> -->
+  <script defer src="js/interactives/hotspots.js"></script>
+  <script defer src="js/interactives/toast-slider.js"></script>
+  <script defer src="js/interactives/load-scene.js"></script>
+  <script defer src="js/interactives/step-order.js"></script>
+  <script defer src="js/interactives/pick-tool.js"></script>
+  <script defer src="js/interactives/flip-cards.js"></script>
+  <script defer src="js/interactives/sort-game.js"></script>
+  <script defer src="js/interactives/badge.js"></script>
+  <script defer src="js/main.js"></script>
+</head>
+<body>
+  <!-- Спрайт иконок: исходники в assets/icons/*.svg, держать синхронно (см. CLAUDE.md) -->
+  <svg class="u-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="icon-correct" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path fill="none" style="stroke: var(--icon-ink, #fff)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m7.2 12.4 3.2 3.1 6.4-6.6"/></symbol>
+    <symbol id="icon-incorrect" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path fill="none" style="stroke: var(--icon-ink, #fff)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m8.4 8.4 7.2 7.2M15.6 8.4l-7.2 7.2"/></symbol>
+    <symbol id="icon-warning" viewBox="0 0 24 24"><path fill="currentColor" d="M10.3 3.4a2 2 0 0 1 3.4 0l8.4 14.6a2 2 0 0 1-1.7 3H3.6a2 2 0 0 1-1.7-3Z"/><path fill="none" style="stroke: var(--icon-ink, #fff)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 9v4.6"/><circle cx="12" cy="17.1" r="1.3" style="fill: var(--icon-ink, #fff)"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="2.6" d="m5 12.6 4.4 4.3L19 7.4"/></symbol>
+    <symbol id="icon-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="2.6" d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13.5M13 6.5l5.5 5.5-5.5 5.5"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="icon-flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 11a7.5 7.5 0 0 1 13.3-4.3"/><path d="M18.5 3.5v3.7h-3.7"/><path d="M19.5 13a7.5 7.5 0 0 1-13.3 4.3"/><path d="M5.5 20.5v-3.7h3.7"/></symbol>
+    <symbol id="icon-drag" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.7" fill="currentColor"/><circle cx="15" cy="6" r="1.7" fill="currentColor"/><circle cx="9" cy="12" r="1.7" fill="currentColor"/><circle cx="15" cy="12" r="1.7" fill="currentColor"/><circle cx="9" cy="18" r="1.7" fill="currentColor"/><circle cx="15" cy="18" r="1.7" fill="currentColor"/></symbol>
+    <symbol id="icon-crumb" viewBox="0 0 24 24"><path style="fill: var(--icon-crust, #D9B273)" d="M4.5 21V11.3C3 10.6 2.2 9.3 2.2 7.8 2.2 4.6 6.6 2.4 12 2.4s9.8 2.2 9.8 5.4c0 1.5-.8 2.8-2.3 3.5V21a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 21Z"/><path style="fill: var(--icon-crumb, #FFF6E5)" d="M5.9 21.2V10.5C4.5 9.9 3.6 8.9 3.6 7.8 3.6 5.5 7.4 3.8 12 3.8s8.4 1.7 8.4 4c0 1.1-.9 2.1-2.3 2.7v10.7Z"/></symbol>
+    <symbol id="icon-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8v18.4M4 7.4l16 9.2M4 16.6l16-9.2"/><path d="m9.6 3.8 2.4 2.4 2.4-2.4M9.6 20.2l2.4-2.4 2.4 2.4"/><path d="m3.6 10.7 3.3-.9-.9-3.3M20.4 13.3l-3.3.9.9 3.3M6 16.8l.9-3.3-3.3-.9M18 7.2l-.9 3.3 3.3.9"/></symbol>
+    <symbol id="icon-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-3.9 0-6.8-2.7-6.8-6.4 0-3.3 2.2-5.3 3.7-7.5.3 1.9 1.2 3 2.3 3.6C11 7.4 12.4 4.6 15 2.5c.1 3.4 3.8 5.9 3.8 11 0 4.6-3 8-6.8 8Z"/><path d="M12 21.5c-1.7 0-2.9-1.2-2.9-2.9 0-1.6 1.2-2.6 2.2-3.8.6 1.4 1.7 1.6 2.5 1.2.6 1 1.1 1.7 1.1 2.7 0 1.6-1.2 2.8-2.9 2.8Z"/></symbol>
+    <symbol id="icon-smoke" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20.5c-1.8-1.8 1.8-3.6 0-5.4s1.8-3.6 0-5.4"/><path d="M12 21.5c-2-2 2-4 0-6s2-4 0-6 2-4 0-6"/><path d="M17 20.5c-1.8-1.8 1.8-3.6 0-5.4s1.8-3.6 0-5.4"/></symbol>
+    <symbol id="icon-medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.8h8l-2.6 6.6M8 2.8l2.6 6.6"/><circle cx="12" cy="15.2" r="6"/><path d="m12 12.4.9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3Z" stroke-width="1.6"/></symbol>
+    <symbol id="icon-tap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13.5V5.2a1.6 1.6 0 0 1 3.2 0v6.3m0-1a1.6 1.6 0 0 1 3.2 0v1.2m0-.2a1.6 1.6 0 0 1 3.2 0V15a6.5 6.5 0 0 1-6.5 6.5h-.8a6 6 0 0 1-4.7-2.3L4.7 16a1.6 1.6 0 0 1 2.5-2l2.8 2.6"/><path d="m6.6 4.4-1.4-1.2M16.6 4.4 18 3.2M11.6 1.6v.1" stroke-width="2"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.8" y="10.4" width="14.4" height="10.6" rx="2.6"/><path d="M8 10.4V7.6a4 4 0 0 1 8 0v2.8M12 14.6v2.4"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.4 10l4.6 4.6 4.6-4.6M4.5 19.8h15"/></symbol>
+    <symbol id="icon-replay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 12A7.4 7.4 0 1 0 7 6.7"/><path d="M5.2 3.4v3.9h3.9"/></symbol>
+    <symbol id="icon-face-meh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8.4 15.6h7.2"/><circle cx="8.8" cy="9.8" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.2" cy="9.8" r="1.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icon-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5h11.5V14a5.5 5.5 0 0 1-5.5 5.5H10A5.5 5.5 0 0 1 4.5 14Z"/><path d="M16 11h1.6a2.6 2.6 0 0 1 0 5.2H16M3.5 22h15"/><path d="M8.4 2.6c-.9 1.1.9 2.1 0 3.4M12.4 2.6c-.9 1.1.9 2.1 0 3.4"/></symbol>
+    <symbol id="icon-swipe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h18M6.2 3.3 3 6.5l3.2 3.2M17.8 3.3 21 6.5l-3.2 3.2"/><path d="M10.2 21.5v-8.2a1.8 1.8 0 0 1 3.6 0v8.2"/></symbol>
+    <symbol id="icon-fork-slot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15.4" width="18" height="6" rx="2"/><path d="M7 18.4h10"/><path d="M9.6 2.5v4.2M12 2.5v4.2M14.4 2.5v4.2M9.6 6.7a2.4 2.4 0 0 0 4.8 0M12 9.1v9.3"/></symbol>
+    <symbol id="icon-wet-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.6 12.6V6.8a1.4 1.4 0 0 1 2.8 0v4.6m0-.4V4.8a1.4 1.4 0 0 1 2.8 0V11m0-.6V6.2a1.4 1.4 0 0 1 2.8 0V11.6m0-.6V9a1.4 1.4 0 0 1 2.8 0v5a7 7 0 0 1-7 7h-.4a6.3 6.3 0 0 1-5.2-2.8L5 15.3a1.4 1.4 0 0 1 2.3-1.6l1.3 1.6"/><path d="M4 3.2C3 4.6 2.6 5.4 2.6 6.1a1.4 1.4 0 0 0 2.8 0c0-.7-.4-1.5-1.4-2.9ZM5 9.6c-.7 1-1 1.6-1 2a1 1 0 0 0 2 0c0-.4-.3-1-1-2Z" stroke-width="1.6"/></symbol>
+    <symbol id="icon-sandwich" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V11.2C3.7 10.6 3 9.4 3 8.1 3 5.3 7 3.3 12 3.3s9 2 9 4.8c0 1.3-.7 2.5-2 3.1V21Z"/><path d="M5 13.6c1.4.9 2.4-.9 3.5 0s2.3.9 3.5 0 2.3-.9 3.5 0 2.1.9 3.5 0"/><path d="M9 13.8v2.6"/></symbol>
+    <symbol id="icon-towel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13V9.6c0-3.4 3.8-5.6 8.5-5.6s8.5 2.2 8.5 5.6V13l-2.1-1.3-2.1 1.3-2.1-1.3L12 13l-2.1-1.3L7.8 13l-2.1-1.3Z"/><path d="M5 13.6v4.6a1.6 1.6 0 0 0 1.6 1.6h10.8a1.6 1.6 0 0 0 1.6-1.6v-4.6M7 19.8v1.6M17 19.8v1.6M14.5 16.6h1.6"/></symbol>
+    <symbol id="icon-faucet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.2v6.6M3.5 9.5H11a4.5 4.5 0 0 1 4.5 4.5v1.2M8 9.5V5.4M5.6 5.4h4.8"/><path d="M15.5 17.6c-1 1.3-1.4 2.1-1.4 2.8a1.4 1.4 0 0 0 2.8 0c0-.7-.4-1.5-1.4-2.8Z"/></symbol>
+    <symbol id="icon-unattended" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="13" r="7.6"/><path d="M10 9.2V13l2.8 1.8"/><path d="M21 4.5v8.2" stroke-width="2.6"/><path d="M21 17.6v.1" stroke-width="3"/></symbol>
+    <symbol id="icon-tray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.8h18v4.6a2.2 2.2 0 0 1-2.2 2.2H5.2A2.2 2.2 0 0 1 3 18.4Z"/><path d="M9.8 17.2h4.4"/><circle cx="7.6" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="12.2" cy="5.4" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.8" cy="9.8" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="10.4" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icon-unplug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="8.4" width="7.4" height="7.2" rx="1.8"/><path d="M11.2 10.6h2.8M11.2 13.4h2.8M3.8 12H1.6"/><rect x="18.2" y="4.5" width="3.6" height="15" rx="1.4"/><path d="m15.7 7.2 1-1M15.7 16.8l1 1"/></symbol>
+  </svg>
+
+  <a class="c-skip-link" href="#main">Перейти к содержанию</a>
+
+  <header class="c-header">
+    <div class="l-container c-header__inner">
+      <a class="c-header__title" href="#block-1">Тостер без страха</a>
+
+      <div class="c-header__progress c-progress" data-stage="0" style="--progress: 0"
+           role="progressbar" aria-label="Прогресс курса" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <svg class="c-progress__slice" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path class="c-progress__slice-crust" d="M4.5 21V11.3C3 10.6 2.2 9.3 2.2 7.8 2.2 4.6 6.6 2.4 12 2.4s9.8 2.2 9.8 5.4c0 1.5-.8 2.8-2.3 3.5V21a1.6 1.6 0 0 1-1.6 1.6H6.1A1.6 1.6 0 0 1 4.5 21Z"/>
+          <path class="c-progress__slice-fill" d="M5.9 21.2V10.5C4.5 9.9 3.6 8.9 3.6 7.8 3.6 5.5 7.4 3.8 12 3.8s8.4 1.7 8.4 4c0 1.1-.9 2.1-2.3 2.7v10.7Z"/>
+        </svg>
+        <div class="c-progress__track"><div class="c-progress__fill"></div></div>
+        <span class="c-progress__label" aria-hidden="true">0%</span>
+      </div>
+
+      <div class="c-header__crumbs c-crumbs" role="status" aria-live="polite" aria-atomic="true">
+        <span class="c-crumbs__icon"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg></span>
+        <span><span data-crumbs-value>0</span><span class="c-crumbs__max"> / <span data-crumbs-max>13</span></span></span>
+        <span class="u-visually-hidden">крошек</span>
+        <!-- «+N» при начислении (main.js пишет число, анимация — CSS); диктор читает только новое значение -->
+        <span class="c-crumbs__delta" data-crumbs-delta aria-hidden="true" hidden></span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="l-main">
+    <section class="c-block" id="block-1" aria-labelledby="block-1-title" data-block="1">
+      <div class="l-container">
+        <div class="c-intro">
+          <div class="c-block__header c-intro__head">
+            <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">1 / 9</span><span class="u-visually-hidden">Блок 1 из 9:</span><span>Введение</span></p>
+            <h1 class="c-block__title u-text-display" id="block-1-title">Тостер без страха</h1>
+            <p class="c-intro__lead">Приготовь идеальный тост за несколько минут</p>
+          </div>
+
+          <figure class="c-figure c-intro__cover">
+            <img src="assets/img/cover.svg" alt="На столе стоит синий тостер, из него выглядывают два золотистых тоста"
+                 width="800" height="450" loading="eager" fetchpriority="high" decoding="async">
+          </figure>
+
+          <div class="c-block__body c-intro__body">
+            <p class="c-intro__text">Тостер — простой прибор. Но если пользоваться им неправильно, можно получить угольки вместо завтрака, обжечь пальцы или даже устроить пожар.</p>
+
+            <div>
+              <p class="c-checklist__title" id="block-1-learn">За 3 минуты ты научишься:</p>
+              <ul class="c-checklist" role="list" aria-labelledby="block-1-learn">
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>понимать, какая кнопка за что отвечает;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>готовить тост нужной степени поджаристости;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>безопасно доставать горячий хлеб;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>спокойно действовать, если что-то пошло не так.</span></li>
+              </ul>
+            </div>
+
+            <p class="c-crumbs-note">
+              <span class="c-crumbs-note__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-crumb"></use></svg></span>
+              <span>За выполнение заданий и правильные ответы ты будешь получать <b>крошки</b>. Соберёшь 10 из 13 — получишь значок <b>«Мастер тоста»</b>.</span>
+            </p>
+          </div>
+
+          <div class="c-intro__foot">
+            <a class="c-btn c-btn--icon-end" href="#block-2" data-next>Включаем!<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-2" aria-labelledby="block-2-title" data-block="2">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">2 / 9</span><span class="u-visually-hidden">Блок 2 из 9:</span><span>Из чего состоит тостер</span></p>
+          <h2 class="c-block__title" id="block-2-title">Знакомимся с тостером</h2>
+        </div>
+        <div class="c-block__body">
+          <p class="c-hint"><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Нажми на каждую точку, чтобы узнать, что это.</span></p>
+
+          <div class="c-hotspots" data-interactive="hotspots" data-block="2">
+            <figure class="c-figure">
+              <div class="c-hotspots__stage">
+<!-- @inline:toaster-scheme -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" role="img" aria-labelledby="toaster-scheme-title" focusable="false"><title id="toaster-scheme-title">Схема тостера: слоты, рычаг, регулятор, кнопка «Стоп», поддон для крошек, шнур с вилкой</title>
+<g id="toaster-scheme-art"><defs><linearGradient id="toaster-scheme-g-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--illu-body)"/><stop offset=".62" style="stop-color:var(--illu-body)"/><stop offset="1" style="stop-color:var(--illu-body-shade)"/></linearGradient>
+<linearGradient id="toaster-scheme-g-top" x1="0" y1="1" x2="0" y2="0"><stop offset="0" style="stop-color:var(--illu-body-light)"/><stop offset="1" style="stop-color:var(--illu-body)"/></linearGradient>
+<clipPath id="toaster-scheme-clip"><path d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/></clipPath></defs><g id="toaster-scheme-toaster">
+<path id="toaster-scheme-shadow" d="M50 304Q50 316 64 316H352Q364 316 374 308L448 252Q456 244 444 244H150Z" style="fill:var(--illu-shadow)"/>
+<g id="toaster-scheme-cord">
+<path fill="none" stroke-width="6" stroke-linecap="round" d="M400 238C452 244 478 284 446 310C426 326 432 342 458 340" style="stroke:var(--illu-plastic)"/>
+<rect x="487" y="333" width="13" height="4" rx="2" style="fill:var(--illu-metal-shade)"/>
+<rect x="487" y="343" width="13" height="4" rx="2" style="fill:var(--illu-metal-shade)"/>
+<rect x="456" y="329" width="33" height="22" rx="7" style="fill:var(--illu-plastic)"/>
+<rect x="461" y="332" width="20" height="4" rx="2" opacity=".18" style="fill:var(--illu-highlight)"/>
+</g>
+<g id="toaster-scheme-body">
+<rect x="76" y="296" width="30" height="14" rx="6" style="fill:var(--illu-plastic)"/>
+<rect x="296" y="296" width="30" height="14" rx="6" style="fill:var(--illu-plastic)"/>
+<rect x="392" y="242" width="24" height="13" rx="5" style="fill:var(--illu-plastic)"/>
+<path d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z" style="fill:var(--illu-body-shade)"/>
+<path clip-path="url(#toaster-scheme-clip)" fill="url(#toaster-scheme-g-top)" d="M60 120L144 56H424L340 120Z"/>
+<path d="M417 82V206" stroke-opacity=".12" stroke-width="4" stroke-linecap="round" style="stroke:var(--illu-highlight)"/>
+<path id="toaster-scheme-groove" d="M382 118V214" stroke-width="6" stroke-linecap="round" style="stroke:var(--illu-plastic)"/>
+</g>
+<g id="toaster-scheme-slots">
+<path stroke-width="6" stroke-linejoin="round" d="M122.2 85.4H368.6L390.4 68.8H144Z" style="fill:var(--illu-metal);stroke:var(--illu-metal)"/>
+<path stroke-width="3" stroke-linejoin="round" d="M131.1 82.9H366.3L381.4 71.4H146.2Z" style="fill:var(--illu-plastic);stroke:var(--illu-plastic)"/>
+<path d="M139 77.1H374.6L381.4 71.4H146.2Z" style="fill:var(--illu-metal-shade)"/>
+<path stroke-width="6" stroke-linejoin="round" d="M90.2 109.8H336.6L358.5 93.1H112.1Z" style="fill:var(--illu-metal);stroke:var(--illu-metal)"/>
+<path stroke-width="3" stroke-linejoin="round" d="M99.2 107.2H334.4L349.5 95.7H114.3Z" style="fill:var(--illu-plastic);stroke:var(--illu-plastic)"/>
+<path d="M106.8 101.4H342L349.5 95.7H114.3Z" style="fill:var(--illu-metal-shade)"/>
+</g>
+<g id="toaster-scheme-glow" opacity="0">
+<path d="M134 82.4H364L371 77.1H141Z" style="fill:var(--illu-heat)"/>
+<path d="M150 81H352L355 78.6H153Z" style="fill:var(--illu-glow)"/>
+<path d="M102 106.7H332L339 101.4H109Z" style="fill:var(--illu-heat)"/>
+<path d="M118 105.3H320L323 102.9H121Z" style="fill:var(--illu-glow)"/>
+</g>
+
+<g id="toaster-scheme-front">
+<rect x="60" y="120" width="280" height="180" rx="22" fill="url(#toaster-scheme-g-front)"/>
+<path d="M84 122H316" stroke-opacity=".28" stroke-width="3" stroke-linecap="round" style="stroke:var(--illu-highlight)"/>
+<rect x="78" y="140" width="10" height="122" rx="5" opacity=".16" style="fill:var(--illu-highlight)"/>
+</g>
+<g id="toaster-scheme-knob">
+<g style="fill:var(--illu-metal)"><circle cx="264.5" cy="197.5" r="2.6"/><circle cx="254.4" cy="166.4" r="2.6"/><circle cx="273.7" cy="139.9" r="2.6"/><circle cx="306.3" cy="139.9" r="2.6"/><circle cx="325.6" cy="166.4" r="2.6"/><circle cx="315.5" cy="197.5" r="2.6"/></g>
+<circle cx="290" cy="175" r="24" style="fill:var(--illu-metal-shade)"/>
+<circle cx="290" cy="172" r="24" style="fill:var(--illu-metal)"/>
+<circle cx="290" cy="172" r="15" opacity=".7" style="fill:var(--illu-highlight)"/>
+<path id="toaster-scheme-knob-pointer" d="M287.7 167.5L281.8 156" stroke-width="4" stroke-linecap="round" style="stroke:var(--illu-plastic)"/>
+</g>
+<g id="toaster-scheme-stop">
+<rect x="268" y="247" width="44" height="22" rx="11" style="fill:var(--illu-metal-shade)"/>
+<rect x="268" y="244" width="44" height="22" rx="11" style="fill:var(--illu-metal)"/>
+<path d="M285.5 250.5L294.5 259.5M294.5 250.5L285.5 259.5" stroke-width="4" stroke-linecap="round" style="stroke:var(--illu-plastic)"/>
+</g>
+<g id="toaster-scheme-tray">
+<rect x="96" y="289" width="140" height="18" rx="7" style="fill:var(--illu-metal-shade)"/>
+<rect x="96" y="286" width="140" height="17" rx="7" style="fill:var(--illu-metal)"/>
+<rect x="148" y="293" width="36" height="5" rx="2.5" style="fill:var(--illu-metal-shade)"/>
+</g>
+<g id="toaster-scheme-lever">
+<rect x="376" y="119" width="62" height="20" rx="8" style="fill:var(--illu-plastic)"/>
+<rect x="381" y="122" width="52" height="4" rx="2" opacity=".2" style="fill:var(--illu-highlight)"/>
+</g>
+</g></g>
+</svg>
+<!-- /@inline:toaster-scheme -->
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="1" aria-expanded="false" aria-controls="block-2-tip-1" style="--x: 46.2%; --y: 24.7%"><span class="c-hotspot__dot" aria-hidden="true">1</span><span class="u-visually-hidden">Слоты</span></button>
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="2" aria-expanded="false" aria-controls="block-2-tip-2" style="--x: 80.8%; --y: 35.8%"><span class="c-hotspot__dot" aria-hidden="true">2</span><span class="u-visually-hidden">Рычаг</span></button>
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="3" aria-expanded="false" aria-controls="block-2-tip-3" style="--x: 58.3%; --y: 50.3%"><span class="c-hotspot__dot" aria-hidden="true">3</span><span class="u-visually-hidden">Регулятор степени поджаривания</span></button>
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="4" aria-expanded="false" aria-controls="block-2-tip-4" style="--x: 59%; --y: 68.6%"><span class="c-hotspot__dot" aria-hidden="true">4</span><span class="u-visually-hidden">Кнопка «Стоп»</span></button>
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="5" aria-expanded="false" aria-controls="block-2-tip-5" style="--x: 25.3%; --y: 82.2%"><span class="c-hotspot__dot" aria-hidden="true">5</span><span class="u-visually-hidden">Поддон для крошек</span></button>
+                <button class="c-hotspot c-hotspot--light" type="button" data-hotspot="6" aria-expanded="false" aria-controls="block-2-tip-6" style="--x: 90.8%; --y: 94.4%"><span class="c-hotspot__dot" aria-hidden="true">6</span><span class="u-visually-hidden">Шнур с вилкой</span></button>
+              </div>
+
+              <!-- Подсказки: без JS — список под схемой; с JS — открытая (без hidden) показывается тултипом -->
+              <ol class="c-hotspots__tips">
+                <li class="c-hotspots__tip" id="block-2-tip-1" data-tip="1" style="--x: 46.2%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">1</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Слоты</b> (щели сверху)</p>
+                    <p>Сюда кладут хлеб. Внутри — нагревательные спирали, они и поджаривают хлеб.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+                <li class="c-hotspots__tip" id="block-2-tip-2" data-tip="2" style="--x: 80.8%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">2</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Рычаг</b> (сбоку)</p>
+                    <p>Опускает хлеб внутрь и включает нагрев. Когда тост готов — сам поднимается.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+                <li class="c-hotspots__tip" id="block-2-tip-3" data-tip="3" style="--x: 44.6%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">3</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Регулятор степени поджаривания</b> (крутилка с цифрами)</p>
+                    <p>Цифры от 1 до 6–7: чем больше цифра, тем дольше жарится хлеб и тем он темнее.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+                <li class="c-hotspots__tip" id="block-2-tip-4" data-tip="4" style="--x: 44.6%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">4</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Кнопка «Стоп»</b> (часто <svg class="c-icon c-icon--inline" aria-hidden="true" focusable="false"><use href="#icon-cross"></use></svg><span class="u-visually-hidden">крестик</span> или Cancel)</p>
+                    <p>Останавливает работу в любой момент — тост сразу выскочит.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+                <li class="c-hotspots__tip" id="block-2-tip-5" data-tip="5" style="--x: 28.8%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">5</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Поддон для крошек</b> (выдвижной, снизу)</p>
+                    <p>Собирает крошки. Их нужно регулярно вытряхивать — скопившиеся крошки могут загореться.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+                <li class="c-hotspots__tip" id="block-2-tip-6" data-tip="6" style="--x: 90.8%" hidden data-nojs-show>
+                  <span class="c-hotspots__num" aria-hidden="true">6</span>
+                  <div class="c-hotspots__body">
+                    <p class="c-hotspots__title"><b>Шнур с вилкой</b></p>
+                    <p>Подключает тостер к розетке. Он должен быть целым — без трещин и оголённых проводов.</p>
+                  </div>
+                  <button class="c-tooltip__close" type="button" data-tip-close aria-label="Закрыть подсказку" data-js-only><svg class="c-icon c-icon--s" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg></button>
+                </li>
+              </ol>
+            </figure>
+
+            <aside class="c-callout c-callout--info" role="note" aria-label="Совет">
+              <p>На некоторых тостерах есть дополнительные кнопки: <b>разморозка</b> (<svg class="c-icon c-icon--inline" aria-hidden="true" focusable="false"><use href="#icon-snowflake"></use></svg><span class="u-visually-hidden">снежинка</span> — для замороженного хлеба) и <b>подогрев</b> (для остывшего тоста). Их значки ищи в инструкции к своей модели.</p>
+            </aside>
+
+            <div class="c-feedback-area" role="status" aria-live="polite">
+              <!-- Когда открыты все 6 точек -->
+              <div class="c-feedback c-feedback--correct" data-feedback="complete" hidden>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <p class="c-feedback__text"><b>Отличное начало!</b></p>
+                <span class="c-feedback__reward" data-reward="2">+2 <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg> крошки</span>
+              </div>
+            </div>
+
+            <div class="c-block__next">
+              <!-- Активируется, когда открыты все 6 точек (этап 5) -->
+              <a class="c-btn c-btn--icon-end" href="#block-3" data-next aria-disabled="true">Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-3" aria-labelledby="block-3-title" data-block="3">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">3 / 9</span><span class="u-visually-hidden">Блок 3 из 9:</span><span>Подготовка к работе</span></p>
+          <h2 class="c-block__title" id="block-3-title">Готовим тостер к работе</h2>
+        </div>
+        <div class="c-block__body">
+          <ol class="c-steps">
+            <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">01</span><p><b>Выбери место.</b> Ровная, устойчивая поверхность, которая не боится тепла. Вокруг — свободное пространство: не под навесным шкафчиком, подальше от штор, полотенец и раковины.</p></li>
+            <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">02</span><p><b>Проверь тостер.</b> Сними всю упаковку и наклейки. Убедись, что шнур целый, а поддон для крошек вставлен до конца.</p></li>
+            <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">03</span><p><b>Подключи.</b> Вставь вилку в розетку <b>сухими руками</b>.</p></li>
+          </ol>
+
+          <aside class="c-callout c-callout--info" role="note" aria-label="Совет">
+            <p class="c-callout__title">Первый запуск.</p>
+            <p>Включи пустой тостер на средней мощности на один цикл (окно лучше открыть). Лёгкий запах и дымок в первый раз — это нормально: сгорают заводские смазки. Так рекомендуют производители.</p>
+          </aside>
+
+          <div class="c-block__next">
+            <a class="c-btn c-btn--icon-end" href="#block-4" data-next>Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-4" aria-labelledby="block-4-title" data-block="4">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">4 / 9</span><span class="u-visually-hidden">Блок 4 из 9:</span><span>Выбираем режим</span></p>
+          <h2 class="c-block__title" id="block-4-title">Какой тост ты любишь?</h2>
+        </div>
+        <div class="c-block__body">
+          <p class="c-hint" data-js-only><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Передвинь ползунок и посмотри, каким получится тост.</span></p>
+
+          <!-- Состояние — data-value (1–6): стрелка регулятора, цвет ломтика и заливка ползунка меняются в CSS -->
+          <div class="c-sim" data-interactive="toast-slider" data-block="4" data-value="3">
+            <figure class="c-figure c-sim__figure">
+              <div class="c-sim__pair">
+                <div class="c-sim__dial">
+<!-- @inline:dial -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="dial-title" focusable="false"><title id="dial-title">Регулятор степени поджаривания</title>
+<g id="dial-art"><g id="dial-ticks"><circle cx="53.8" cy="186.2" r="6.8" style="fill:var(--illu-metal-shade)"/><circle cx="27.6" cy="105.4" r="6.8" style="fill:var(--illu-metal-shade)"/><circle cx="77.5" cy="36.6" r="6.8" style="fill:var(--illu-metal-shade)"/><circle cx="162.5" cy="36.6" r="6.8" style="fill:var(--illu-metal-shade)"/><circle cx="212.4" cy="105.4" r="6.8" style="fill:var(--illu-metal-shade)"/><circle cx="186.2" cy="186.2" r="6.8" style="fill:var(--illu-metal-shade)"/></g><circle cx="120" cy="127.8" r="62.4" style="fill:var(--illu-metal-shade)"/><circle cx="120" cy="120" r="62.4" style="fill:var(--illu-metal)"/><circle cx="120" cy="120" r="39" opacity=".7" style="fill:var(--illu-highlight)"/><g id="dial-pointer" style="transform-origin:120px 120px;transform:rotate(var(--dial-rotate,0deg));transition:transform var(--duration-base) var(--ease-emphasized)"><path d="M110.8 129.2L86.9 153.1" stroke-width="10.4" stroke-linecap="round" style="stroke:var(--illu-plastic)"/></g></g>
+</svg>
+<!-- /@inline:dial -->
+                  <ol class="c-sim__nums" aria-hidden="true">
+                    <li style="--x: 16.4%; --y: 83.6%">1</li>
+                    <li style="--x: 3.1%; --y: 42.6%">2</li>
+                    <li style="--x: 28.4%; --y: 7.7%">3</li>
+                    <li style="--x: 71.6%; --y: 7.7%">4</li>
+                    <li style="--x: 96.9%; --y: 42.6%">5</li>
+                    <li style="--x: 83.6%; --y: 83.6%">6</li>
+                  </ol>
+                </div>
+                <div class="c-sim__slice">
+<!-- @inline:toast-slice -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="toast-slice-title" focusable="false"><title id="toast-slice-title">Ломтик: золотистый</title>
+<g id="toast-slice-art"><path opacity=".8" d="M66 210H210L202 220H60Z" style="fill:var(--illu-shadow)"/><g id="toast-slice-crust"><path style="fill:var(--toast-slice-crust,var(--illu-bread-3));transition:fill var(--duration-slow) var(--ease-standard)" d="M62 200V88C51.8 78.4 51.8 36.8 82.4 27.8C109.6 20.8 150.4 20.8 177.6 27.8C208.2 36.8 208.2 78.4 198 88V200Z"/><path style="fill:var(--toast-slice-crust,var(--illu-bread-3));transition:fill var(--duration-slow) var(--ease-standard)" d="M52 208V96C41.8 86.4 41.8 44.8 72.4 35.8C99.6 28.8 140.4 28.8 167.6 35.8C198.2 44.8 198.2 86.4 188 96V208Z"/></g><g id="toast-slice-crumb"><path style="fill:var(--toast-slice-crumb,var(--illu-bread-2));transition:fill var(--duration-slow) var(--ease-standard)" d="M62 209V97C53.3 88.9 53.3 53.8 79.4 46.2C102.6 40.3 137.4 40.3 160.6 46.2C186.7 53.8 186.7 88.9 178 97V209Z"/></g></g>
+</svg>
+<!-- /@inline:toast-slice -->
+                </div>
+              </div>
+
+              <div class="c-range" data-js-only>
+                <label class="u-visually-hidden" for="block-4-range">Степень поджаривания</label>
+                <input class="c-range__input" type="range" id="block-4-range" min="1" max="6" step="1" value="3" aria-describedby="block-4-state">
+                <ol class="c-range__scale" aria-hidden="true"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li></ol>
+              </div>
+
+              <!-- Подписи по положению ползунка (data-min…data-max); data-slice-title — для <title> ломтика -->
+              <div class="c-sim__states" id="block-4-state" role="status" aria-live="polite">
+                <p class="c-sim__state" data-range-state="light" data-min="1" data-max="2" data-slice-title="Ломтик: слегка подсушенный" hidden data-nojs-show><span class="c-chip c-chip--accent" data-nojs-only>1–2</span><b>Слегка подсушенный.</b> Для свежего мягкого хлеба или если любишь светлые тосты.</p>
+                <p class="c-sim__state" data-range-state="golden" data-min="3" data-max="4" data-slice-title="Ломтик: золотистый"><span class="c-chip c-chip--accent" data-nojs-only>3–4</span><b>Золотистый — классика.</b> <span class="c-sim__best">Лучший выбор для первого раза.</span></p>
+                <p class="c-sim__state" data-range-state="dark" data-min="5" data-max="6" data-slice-title="Ломтик: тёмный" hidden data-nojs-show><span class="c-chip c-chip--accent" data-nojs-only>5–6</span><b>Тёмный и хрустящий.</b> Для плотного или чёрствого хлеба. Следи внимательно — легко пересушить.</p>
+              </div>
+            </figure>
+          </div>
+
+          <aside class="c-callout c-callout--info" role="note" aria-label="Совет">
+            <p><b class="c-callout__lead">Простое правило:</b> первый раз ставь <b>3</b>. Потом подстрой под свой вкус: бледно — прибавь цифру, темно — убавь.</p>
+            <p>Хлеб тонкий или сухой — уменьшай цифру. Толстый или замороженный — увеличивай (или нажми кнопку разморозки <svg class="c-icon c-icon--inline" aria-hidden="true" focusable="false"><use href="#icon-snowflake"></use></svg><span class="u-visually-hidden">со снежинкой</span>, если она есть).</p>
+          </aside>
+
+          <div class="c-block__next">
+            <a class="c-btn c-btn--icon-end" href="#block-5" data-next>Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-5" aria-labelledby="block-5-title" data-block="5">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">5 / 9</span><span class="u-visually-hidden">Блок 5 из 9:</span><span>Загружаем хлеб и запускаем</span></p>
+          <h2 class="c-block__title" id="block-5-title">Начнём!</h2>
+        </div>
+
+        <!-- Подсказка не из сценария: текст заказчика (13.10.2026). Без JS шаги идут списком — подсказка не нужна -->
+        <div class="c-block__body c-carousel__before" data-js-only>
+          <p class="c-hint"><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Нажимай на стрелку, чтобы посмотреть все шаги.</span></p>
+        </div>
+
+        <!-- Карусель «4 шага = 4 кадра». Без JS — все шаги списком с картинками;
+             с JS — по одному: стрелки, номера шагов, свайп/прокрутка, ← → на кнопках -->
+        <div class="c-carousel" data-interactive="load-scene" data-block="5" data-current="1"
+             role="region" aria-roledescription="карусель" aria-label="Загружаем хлеб и запускаем">
+          <ol class="c-carousel__track" id="block-5-track" data-carousel-track>
+            <li class="c-carousel__slide" id="block-5-slide-1" data-slide="1">
+              <figure class="c-figure c-carousel__figure">
+                <img src="assets/img/load-scene-1.webp" alt="Рука опускает ломтик хлеба в свободный слот, второй ломтик уже в тостере" width="891" height="891" loading="lazy" decoding="async">
+              </figure>
+              <div class="c-carousel__text">
+                <span class="c-carousel__num" aria-hidden="true">01<span class="c-carousel__total"> / 04</span></span>
+                <p>Положи <b>по одному ломтику</b> в каждый слот. Хлеб должен входить свободно — не вдавливай его.</p>
+              </div>
+            </li>
+            <li class="c-carousel__slide" id="block-5-slide-2" data-slide="2">
+              <figure class="c-figure c-carousel__figure">
+                <img src="assets/img/load-scene-2.webp" alt="Палец нажимает рычаг тостера, оба ломтика в слотах" width="891" height="891" loading="lazy" decoding="async">
+              </figure>
+              <div class="c-carousel__text">
+                <span class="c-carousel__num" aria-hidden="true">02<span class="c-carousel__total"> / 04</span></span>
+                <p>Опусти рычаг <b>до щелчка</b>: он должен остаться внизу.</p>
+              </div>
+            </li>
+            <li class="c-carousel__slide" id="block-5-slide-3" data-slide="3">
+              <figure class="c-figure c-carousel__figure">
+                <img src="assets/img/load-scene-3.webp" alt="Рычаг внизу, в слотах горит оранжевое свечение — тостер работает" width="891" height="891" loading="lazy" decoding="async">
+              </figure>
+              <div class="c-carousel__text">
+                <span class="c-carousel__num" aria-hidden="true">03<span class="c-carousel__total"> / 04</span></span>
+                <p><b>Не уходи далеко</b>, пока тостер работает. Обычно это занимает <span class="u-nowrap">1–3 минуты</span>.</p>
+              </div>
+            </li>
+            <li class="c-carousel__slide" id="block-5-slide-4" data-slide="4">
+              <figure class="c-figure c-carousel__figure">
+                <img src="assets/img/load-scene-4.webp" alt="Тостер поднял два золотистых тоста" width="891" height="891" loading="lazy" decoding="async">
+              </figure>
+              <div class="c-carousel__text">
+                <span class="c-carousel__num" aria-hidden="true">04<span class="c-carousel__total"> / 04</span></span>
+                <p>Когда тост будет готов, тостер выключится сам и поднимет хлеб.</p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="c-carousel__controls" data-js-only>
+            <button class="c-carousel__arrow c-carousel__arrow--prev" type="button" data-carousel-prev aria-controls="block-5-track" aria-disabled="true"><span class="u-visually-hidden">Предыдущий шаг</span><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-arrow"></use></svg></button>
+            <div class="c-carousel__dots" role="group" aria-label="Шаги">
+            <button class="c-carousel__dot" type="button" data-carousel-to="1" aria-controls="block-5-slide-1" aria-current="step"><span class="u-visually-hidden">Шаг </span>1</button>
+            <button class="c-carousel__dot" type="button" data-carousel-to="2" aria-controls="block-5-slide-2"><span class="u-visually-hidden">Шаг </span>2</button>
+            <button class="c-carousel__dot" type="button" data-carousel-to="3" aria-controls="block-5-slide-3"><span class="u-visually-hidden">Шаг </span>3</button>
+            <button class="c-carousel__dot" type="button" data-carousel-to="4" aria-controls="block-5-slide-4"><span class="u-visually-hidden">Шаг </span>4</button>
+            </div>
+            <button class="c-carousel__arrow" type="button" data-carousel-next aria-controls="block-5-track"><span class="u-visually-hidden">Следующий шаг</span><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </div>
+
+        <div class="c-block__body c-carousel__after">
+          <aside class="c-callout c-callout--info" role="note" aria-label="Совет">
+            <p>Рычаг не фиксируется внизу? Проверь, включена ли вилка в розетку. Многие тостеры без электричества рычаг не удерживают.</p>
+          </aside>
+        </div>
+
+        <div class="c-block__body">
+          <div class="c-task" data-interactive="step-order" data-block="5">
+            <h3 class="c-task__question" id="block-5-task">Расставь шаги по порядку</h3>
+            <!-- Подсказка не из сценария: формулировка Claude, согласовано с заказчиком 12.10.2026 (заказчик может заменить) -->
+            <p class="c-hint" data-js-only><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Нажимай на карточки по очереди — от первого шага к последнему. На компьютере их можно перетаскивать.</span></p>
+
+            <!-- Порядок в разметке — перемешанный и фиксированный; data-order — правильное место карточки -->
+            <ol class="c-order" aria-labelledby="block-5-task" data-order-list>
+              <li class="c-order__item" data-order="3">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Выбрать степень поджаривания на регуляторе</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+              <li class="c-order__item" data-order="5">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Опустить рычаг до щелчка</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+              <li class="c-order__item" data-order="1">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Поставить тостер на ровное место вдали от воды и штор</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+              <li class="c-order__item" data-order="6">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Дождаться, когда тост поднимется сам</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+              <li class="c-order__item" data-order="2">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Подключить вилку в розетку сухими руками</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+              <li class="c-order__item" data-order="4">
+                <button class="c-order__card" type="button" aria-pressed="false">
+                  <span class="c-order__handle" aria-hidden="true" data-drag-handle><svg class="c-icon" focusable="false"><use href="#icon-drag"></use></svg></span>
+                  <span class="c-order__text">Положить по одному ломтику в каждый слот</span>
+                  <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+                  <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span>
+                  <span class="u-visually-hidden c-order__status c-order__status--wrong">— неверно</span>
+                  <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                  <svg class="c-icon c-order__badge c-order__badge--wrong" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+                </button>
+              </li>
+            </ol>
+
+            <div class="c-task__actions" data-js-only>
+              <!-- Активируется, когда расставлены все 6 карточек (этап 6) -->
+              <button class="c-btn" type="button" data-check aria-disabled="true">Проверить</button>
+            </div>
+
+            <div class="c-feedback-area" role="status" aria-live="polite">
+              <div class="c-feedback c-feedback--correct" data-feedback="correct" hidden>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <p class="c-feedback__text"><b>Идеальная последовательность!</b> Всё готово к первому тосту.</p>
+                <!-- Награда: верный порядок с первой или второй попытки — +4 -->
+                <span class="c-feedback__reward" data-reward="4">+4 <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg><span class="u-visually-hidden">крошки</span></span>
+              </div>
+              <div class="c-feedback c-feedback--incorrect" data-feedback="retry" hidden>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-cross"></use></svg></span>
+                <p class="c-feedback__text"><b>Почти!</b> Подумай, что нужно сделать до того, как хлеб окажется внутри. Попробуй ещё раз.</p>
+              </div>
+              <!-- После двух неудачных попыток; без JS виден сразу -->
+              <div class="c-order-solution" data-feedback="solution" hidden data-nojs-show>
+                <p class="c-order-solution__title" id="block-5-solution">Правильный порядок:</p>
+                <ol aria-labelledby="block-5-solution">
+                  <li>Поставить тостер на ровное место вдали от воды и штор</li>
+                  <li>Подключить вилку в розетку сухими руками</li>
+                  <li>Выбрать степень поджаривания на регуляторе</li>
+                  <li>Положить по одному ломтику в каждый слот</li>
+                  <li>Опустить рычаг до щелчка</li>
+                  <li>Дождаться, когда тост поднимется сам</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="c-block__next">
+              <!-- Активируется, когда порядок собран верно или показан правильный (этап 6) -->
+              <a class="c-btn c-btn--icon-end" href="#block-6" data-next aria-disabled="true">Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-6" aria-labelledby="block-6-title" data-block="6">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">6 / 9</span><span class="u-visually-hidden">Блок 6 из 9:</span><span>Достаём тост безопасно</span></p>
+          <h2 class="c-block__title" id="block-6-title">Осторожно, горячо!</h2>
+        </div>
+
+        <div class="l-split">
+          <div class="c-block__body">
+            <ol class="c-steps">
+              <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">01</span><p>Тост и корпус тостера сразу после работы <b>очень горячие</b>. Подожди несколько секунд.</p></li>
+              <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">02</span><p>Бери тост за край или используй <b>деревянные или силиконовые щипцы</b>.</p></li>
+              <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">03</span><p>Если тост поднялся невысоко, на многих моделях можно приподнять рычаг ещё чуть выше.</p></li>
+              <li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">04</span><!-- Нейтральная формулировка (решение заказчика 13.10.2026; в сценарии — «Закончил —») -->
+              <p>Когда закончишь — <b>выключи тостер из розетки</b>.</p></li>
+            </ol>
+
+            <aside class="c-callout c-callout--danger" role="note" aria-label="Важно">
+              <span class="c-callout__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-warning"></use></svg></span>
+              <div class="c-callout__body">
+                <p class="c-callout__title">Важно</p>
+                <p><b>Никогда не доставай тост вилкой, ножом или другим металлическим предметом.</b> Внутри тостера — спирали под напряжением. Металл проводит ток: можно получить удар током, даже если тостер уже не греет, но включён в розетку.</p>
+              </div>
+            </aside>
+          </div>
+
+          <!-- Пара «можно / нельзя»: ✅ / ❌ сценария → значки correct / incorrect + слово -->
+          <div class="c-pair l-split__sticky">
+            <figure class="c-figure c-pair__item">
+              <img src="assets/img/take-tongs.webp" alt="Рука достаёт тост деревянными щипцами" width="640" height="480" loading="lazy" decoding="async">
+              <figcaption class="c-verdict c-verdict--yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</figcaption>
+            </figure>
+            <figure class="c-figure c-pair__item">
+              <img src="assets/img/take-fork.svg" alt="Вилка, засунутая в слот тостера, перечёркнута" width="480" height="360" loading="lazy" decoding="async">
+              <figcaption class="c-verdict c-verdict--no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>Нельзя</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="c-block__body">
+          <fieldset class="c-task" data-interactive="pick-tool" data-block="6">
+            <legend class="c-task__legend"><h3 class="c-task__question" id="block-6-task">Чем достать тост?</h3></legend>
+            <!-- Подсказка не из сценария (там — указание «нужно выбрать все безопасные варианты»): формулировка Claude, на согласование -->
+            <p class="c-hint" data-js-only><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Выбери все безопасные варианты.</span></p>
+
+            <!-- Множественный выбор: кнопки-переключатели aria-pressed; data-correct="true" — безопасные варианты.
+                 Одна попытка (решение заказчика 13.10.2026): после «Проверить» перевыбрать нельзя — все варианты
+                 aria-disabled, на каждой карточке показывается ключ: безопасные — is-correct, опасные — is-incorrect
+                 (значок + скрытый текст c-card__key); отметка пользователя остаётся в квадрате слева. -->
+            <div class="c-choices c-choices--4" data-choices>
+              <button class="c-card c-card--interactive c-card--pick" type="button" data-option="tongs" data-correct="true" aria-pressed="false">
+                <span class="c-card__check" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <img class="c-card__media" src="assets/img/pick-tongs.svg" alt="" width="240" height="240" loading="lazy" decoding="async">
+                <span class="c-card__text">Деревянные щипцы</span>
+                <span class="u-visually-hidden c-card__key">— можно</span>
+                <svg class="c-icon c-card__badge c-card__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                <svg class="c-icon c-card__badge c-card__badge--incorrect" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+              </button>
+              <button class="c-card c-card--interactive c-card--pick" type="button" data-option="fork" aria-pressed="false">
+                <span class="c-card__check" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <img class="c-card__media" src="assets/img/pick-fork.svg" alt="" width="240" height="240" loading="lazy" decoding="async">
+                <span class="c-card__text">Металлическая вилка</span>
+                <span class="u-visually-hidden c-card__key">— нельзя</span>
+                <svg class="c-icon c-card__badge c-card__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                <svg class="c-icon c-card__badge c-card__badge--incorrect" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+              </button>
+              <button class="c-card c-card--interactive c-card--pick" type="button" data-option="fingers" data-correct="true" aria-pressed="false">
+                <span class="c-card__check" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <img class="c-card__media" src="assets/img/pick-fingers.webp" alt="" width="280" height="280" loading="lazy" decoding="async">
+                <span class="c-card__text">Пальцы — осторожно, за край, когда тост немного остыл</span>
+                <span class="u-visually-hidden c-card__key">— можно</span>
+                <svg class="c-icon c-card__badge c-card__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                <svg class="c-icon c-card__badge c-card__badge--incorrect" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+              </button>
+              <button class="c-card c-card--interactive c-card--pick" type="button" data-option="knife" aria-pressed="false">
+                <span class="c-card__check" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <img class="c-card__media" src="assets/img/pick-knife.svg" alt="" width="240" height="240" loading="lazy" decoding="async">
+                <span class="c-card__text">Нож</span>
+                <span class="u-visually-hidden c-card__key">— нельзя</span>
+                <svg class="c-icon c-card__badge c-card__badge--correct" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+                <svg class="c-icon c-card__badge c-card__badge--incorrect" aria-hidden="true" focusable="false"><use href="#icon-incorrect"></use></svg>
+              </button>
+            </div>
+
+            <div class="c-task__actions" data-js-only>
+              <!-- Активируется, когда выбран хотя бы один вариант (этап 6) -->
+              <button class="c-btn" type="button" data-check aria-disabled="true">Проверить</button>
+            </div>
+
+            <div class="c-feedback-area" role="status" aria-live="polite">
+              <div class="c-feedback c-feedback--correct" data-feedback="correct" hidden data-nojs-show>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <p class="c-feedback__text"><b>Всё правильно:</b> никакого металла внутри тостера!</p>
+                <!-- Награда — только если выбраны ровно безопасные варианты (попытка одна) -->
+                <span class="c-feedback__reward" data-reward="2" data-js-only>+2 <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg><span class="u-visually-hidden">крошки</span></span>
+              </div>
+              <div class="c-feedback c-feedback--incorrect" data-feedback="wrong" hidden data-nojs-show>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-cross"></use></svg></span>
+                <p class="c-feedback__text"><b>Металл внутри тостера — это риск удара током.</b> Выбирай только дерево или силикон. Если край хлеба торчит — можешь взять его пальцами, не касаясь металлических частей тостера.</p>
+              </div>
+            </div>
+
+            <div class="c-block__next">
+              <!-- Активируется после проверки — верной или нет (этап 6) -->
+              <a class="c-btn c-btn--icon-end" href="#block-7" data-next aria-disabled="true">Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-7" aria-labelledby="block-7-title" data-block="7">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">7 / 9</span><span class="u-visually-hidden">Блок 7 из 9:</span><span>Если что-то пошло не так</span></p>
+          <h2 class="c-block__title" id="block-7-title">Без паники!</h2>
+        </div>
+        <div class="c-block__body">
+          <p class="u-text-body-l">Иногда что-то идёт не по плану. Главное — знать, что делать.</p>
+          <p class="c-hint" data-js-only><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-tap"></use></svg><span>Нажми на карточку, чтобы перевернуть её и узнать, как действовать.</span></p>
+        </div>
+
+        <div class="c-flips" data-interactive="flip-cards" data-block="7">
+          <p class="c-flips__counter" role="status" aria-live="polite" data-js-only>Перевёрнуто: <b><span data-flip-count>0</span> из 4</b></p>
+
+          <!-- Без JS обе стороны видны стопкой; с JS — 3D-переворот по классу is-flipped на li (CSS).
+               Кнопка — первой в li (этап 6): диктор после нажатия читает дальше лицевую сторону и оборот -->
+          <ul class="c-flips__grid" role="list">
+            <li class="c-flip" data-flip="1">
+              <button class="c-flip__btn" type="button" aria-expanded="false" aria-controls="block-7-card-1-back" aria-labelledby="block-7-card-1" data-js-only></button>
+              <div class="c-flip__inner">
+                <div class="c-flip__face c-flip__front">
+                  <img class="c-flip__media" src="assets/img/situation-smoke.svg" alt="Тостер работает, из слотов поднимается серый дым" width="480" height="360" loading="lazy" decoding="async">
+                  <h3 class="c-flip__title" id="block-7-card-1"><span class="c-flip__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-smoke"></use></svg></span>Из тостера пошёл дым</h3>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true">Переверни<svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+                <div class="c-flip__face c-flip__back" id="block-7-card-1-back">
+                  <p class="c-flip__lead">Что делать:</p>
+                  <ol class="c-flip__steps">
+                    <li>Нажми <b>«Стоп»</b> — хлеб выскочит, нагрев прекратится.</li>
+                    <li>Выключи тостер <b>из розетки</b>.</li>
+                    <li>Открой окно и проветри кухню.</li>
+                  </ol>
+                  <p class="c-flip__warn"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg><span><span class="u-visually-hidden">Важно: </span><b>Не заливай тостер водой</b> — можно получить удар током.</span></p>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+              </div>
+              <svg class="c-icon c-flip__done" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+            </li>
+
+            <li class="c-flip" data-flip="2">
+              <button class="c-flip__btn" type="button" aria-expanded="false" aria-controls="block-7-card-2-back" aria-labelledby="block-7-card-2" data-js-only></button>
+              <div class="c-flip__inner">
+                <div class="c-flip__face c-flip__front">
+                  <img class="c-flip__media" src="assets/img/situation-fire.svg" alt="Внутри слотов тостера видны язычки пламени" width="480" height="360" loading="lazy" decoding="async">
+                  <h3 class="c-flip__title" id="block-7-card-2"><span class="c-flip__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-fire"></use></svg></span>Внутри тостера огонь</h3>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true">Переверни<svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+                <div class="c-flip__face c-flip__back" id="block-7-card-2-back">
+                  <p class="c-flip__lead">Что делать:</p>
+                  <ol class="c-flip__steps">
+                    <li><b>Не вытаскивай</b> горящий хлеб и не заглядывай в слоты.</li>
+                    <li>Если можешь сделать это безопасно — <b>выключи тостер из розетки</b>.</li>
+                    <li>Если огонь не потух, накрой тостер одеялом: без доступа воздуха огонь быстро гаснет.</li>
+                  </ol>
+                  <p class="c-flip__warn"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg><span><span class="u-visually-hidden">Важно: </span><b>Не лей воду.</b></span></p>
+                  <p class="c-flip__warn"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg><span><span class="u-visually-hidden">Важно: </span><b>Огонь перекинулся на что-то рядом и его не получается потушить своими силами — уходи из кухни и звони <span class="u-nowrap">112 (или 101)</span>.</b></span></p>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+              </div>
+              <svg class="c-icon c-flip__done" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+            </li>
+
+            <li class="c-flip" data-flip="3">
+              <button class="c-flip__btn" type="button" aria-expanded="false" aria-controls="block-7-card-3-back" aria-labelledby="block-7-card-3" data-js-only></button>
+              <div class="c-flip__inner">
+                <div class="c-flip__face c-flip__front">
+                  <img class="c-flip__media" src="assets/img/situation-stuck.svg" alt="Рычаг поднят, а ломтик застрял в слоте — торчит только краешек" width="480" height="360" loading="lazy" decoding="async">
+                  <h3 class="c-flip__title" id="block-7-card-3"><span class="c-flip__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-crumb"></use></svg></span>Тост застрял внутри</h3>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true">Переверни<svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+                <div class="c-flip__face c-flip__back" id="block-7-card-3-back">
+                  <p class="c-flip__lead">Что делать:</p>
+                  <ol class="c-flip__steps">
+                    <li>Сначала выключи тостер <b>из розетки</b>.</li>
+                    <li>Дай ему <b>остыть</b> несколько минут.</li>
+                    <li>Аккуратно достань хлеб <b>деревянными или силиконовыми щипцами</b>.</li>
+                  </ol>
+                  <p class="c-flip__warn"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg><span><span class="u-visually-hidden">Важно: </span><b>Никаких ножей и вилок</b> и не тряси включённый тостер.</span></p>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+              </div>
+              <svg class="c-icon c-flip__done" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+            </li>
+
+            <li class="c-flip" data-flip="4">
+              <button class="c-flip__btn" type="button" aria-expanded="false" aria-controls="block-7-card-4-back" aria-labelledby="block-7-card-4" data-js-only></button>
+              <div class="c-flip__inner">
+                <div class="c-flip__face c-flip__front">
+                  <img class="c-flip__media" src="assets/img/situation-pale.svg" alt="Только что выскочил бледный тост, рядом недовольный смайлик" width="480" height="360" loading="lazy" decoding="async">
+                  <h3 class="c-flip__title" id="block-7-card-4"><span class="c-flip__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-face-meh"></use></svg></span>Тост получился бледным</h3>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true">Переверни<svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+                <div class="c-flip__face c-flip__back" id="block-7-card-4-back">
+                  <p class="c-flip__lead">Что делать:</p>
+                  <ol class="c-flip__steps">
+                    <li>Запусти тостер ещё раз на <b>низкой цифре <span class="u-nowrap">(1–2)</span></b>.</li>
+                    <li><b>Не отходи</b> — подсушенный хлеб темнеет очень быстро.</li>
+                  </ol>
+                  <!-- 💡 → совет без иконки -->
+                  <p class="c-flip__tip">В следующий раз просто прибавь <b>одну цифру</b> на регуляторе.</p>
+                  <span class="c-flip__hint" data-js-only aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-flip"></use></svg></span>
+                </div>
+              </div>
+              <svg class="c-icon c-flip__done" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>
+            </li>
+          </ul>
+
+          <div class="c-block__body">
+            <div class="c-feedback-area" role="status" aria-live="polite">
+              <!-- Когда перевёрнуты все 4 карточки -->
+              <div class="c-feedback c-feedback--correct" data-feedback="complete" hidden>
+                <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+                <p class="c-feedback__text">Теперь ты знаешь, как действовать в любой ситуации!</p>
+                <span class="c-feedback__reward" data-reward="3">+3 <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg><span class="u-visually-hidden">крошки</span></span>
+              </div>
+            </div>
+
+            <div class="c-block__next">
+              <!-- Активируется, когда перевёрнуты все 4 карточки (этап 6) -->
+              <a class="c-btn c-btn--icon-end" href="#block-8" data-next aria-disabled="true">Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-8" aria-labelledby="block-8-title" data-block="8">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">8 / 9</span><span class="u-visually-hidden">Блок 8 из 9:</span><span>Что делать нельзя</span></p>
+          <h2 class="c-block__title" id="block-8-title">Можно или нельзя?</h2>
+        </div>
+        <div class="c-block__body">
+          <p class="u-text-body-l">Курс почти подошёл к концу. Давай проверим, как запомнилось то, что мы изучали.</p>
+          <!-- Подсказка дополнена кнопками-альтернативами (решение заказчика 13.10.2026) -->
+          <p class="c-hint" data-js-only><svg class="c-icon c-hint__icon" aria-hidden="true" focusable="false"><use href="#icon-swipe"></use></svg><span>Перетащи каждую карточку в нужную зону (на телефоне — свайп влево или вправо) или нажми «Нельзя» или «Можно» на карточке.</span></p>
+        </div>
+
+        <div class="c-sort" data-interactive="sort-game" data-block="8">
+          <!-- Зоны: с JS — игровое поле; без JS скрыты, ответ показан на каждой карточке -->
+          <div class="c-sort__zone c-sort__zone--no" data-zone="no" data-js-only>
+            <p class="c-sort__label" id="block-8-zone-no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</p>
+            <ul class="c-sort__list" role="list" aria-labelledby="block-8-zone-no" aria-live="polite" data-zone-list="no"></ul>
+          </div>
+
+          <!-- Стопка: порядок в разметке — перемешанный и фиксированный; data-card — номер в сценарии, data-zone — верная зона.
+               С JS видна только первая карточка списка (CSS). Кнопки — группа с именем-текстом карточки (этап 6):
+               фокус переходит на «Нельзя» следующей карточки, и диктор называет её. -->
+          <ol class="c-sort__stack" role="list" aria-label="Карточки-действия" aria-live="polite" data-sort-stack>
+            <li class="c-sort__card" data-card="1" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-fork-slot"></use></svg>
+              <p class="c-sort__text" id="block-8-card-1">Засунуть вилку или нож в слот</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Удар током: внутри — спирали под напряжением.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-1" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="2" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-wet-hand"></use></svg>
+              <p class="c-sort__text" id="block-8-card-2">Трогать тостер мокрыми руками</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Вода проводит ток.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-2" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="7" data-zone="yes">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-tray"></use></svg>
+              <p class="c-sort__text" id="block-8-card-7">Вытряхивать крошки из поддона, когда тостер остыл и выключен из розетки</p>
+              <span class="c-chip c-chip--success c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Так и нужно — регулярно.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-7" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="3" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-sandwich"></use></svg>
+              <p class="c-sort__text" id="block-8-card-3">Жарить хлеб с маслом, сыром или начинкой</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Начинка стекает на спирали и может загореться. Для бутербродов есть специальные пакеты для тостера — только если их разрешает производитель.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-3" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="4" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-towel"></use></svg>
+              <!-- Текст сокращён по решению заказчика (13.10.2026; в сценарии — «Накрыть тостер полотенцем или заворачивать хлеб в фольгу») -->
+              <p class="c-sort__text" id="block-8-card-4">Заворачивать хлеб в фольгу</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Перегрев и риск пожара; фольга может замкнуть спирали.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-4" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="8" data-zone="yes">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-unplug"></use></svg>
+              <p class="c-sort__text" id="block-8-card-8">Выключать тостер из розетки после использования</p>
+              <span class="c-chip c-chip--success c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Это хорошая привычка.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-8" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="5" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-faucet"></use></svg>
+              <!-- Тексты карточки изменены по решению заказчика (13.10.2026; в сценарии — «… или погружать в воду» и «Только снаружи …») -->
+              <p class="c-sort__text" id="block-8-card-5">Мыть тостер под краном</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Мой только снаружи влажной тряпкой и только когда он выключен из розетки и остыл.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-5" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+            <li class="c-sort__card" data-card="6" data-zone="no">
+              <svg class="c-icon c-sort__icon" aria-hidden="true" focusable="false"><use href="#icon-unattended"></use></svg>
+              <p class="c-sort__text" id="block-8-card-6">Оставлять работающий тостер без присмотра</p>
+              <span class="c-chip c-chip--danger c-sort__answer" data-nojs-only><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--correct">— верно</span>
+              <span class="u-visually-hidden c-sort__status c-sort__status--wrong">— неверно</span>
+              <p class="c-sort__explain" data-explain hidden data-nojs-show>Хлеб может загореться за считаные секунды.</p>
+              <div class="c-sort__actions" role="group" aria-labelledby="block-8-card-6" data-js-only>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--no" type="button" data-sort="no"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-warning"></use></svg>Нельзя</button>
+                <button class="c-btn c-btn--secondary c-sort__btn c-sort__btn--yes" type="button" data-sort="yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</button>
+              </div>
+            </li>
+          </ol>
+
+          <div class="c-sort__zone c-sort__zone--yes" data-zone="yes" data-js-only>
+            <p class="c-sort__label" id="block-8-zone-yes"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg>Можно</p>
+            <ul class="c-sort__list" role="list" aria-labelledby="block-8-zone-yes" aria-live="polite" data-zone-list="yes"></ul>
+          </div>
+        </div>
+
+        <div class="c-block__body">
+          <div class="c-feedback-area" role="status" aria-live="polite">
+            <!-- Когда разложены все 8 карточек (неверная карточка ждёт верного ответа). Награда — всегда +2 -->
+            <div class="c-feedback c-feedback--correct" data-feedback="complete" hidden>
+              <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-check"></use></svg></span>
+              <p class="c-feedback__text"><b>Ты отлично знаешь правила!</b></p>
+              <span class="c-feedback__reward" data-reward="2">+2 <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg><span class="u-visually-hidden">крошки</span></span>
+            </div>
+          </div>
+
+          <!-- После игры; без JS виден сразу -->
+          <aside class="c-callout c-callout--danger" role="note" aria-label="Важно" data-sort-summary hidden data-nojs-show>
+            <span class="c-callout__tile" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-warning"></use></svg></span>
+            <div class="c-callout__body">
+              <p class="c-callout__title">Главные запреты:</p>
+              <p>металл внутри · вода и мокрые руки · начинка и фольга · накрывать тостер · оставлять без присмотра.</p>
+            </div>
+          </aside>
+
+          <div class="c-block__next">
+            <!-- Активируется, когда разложены все 8 карточек (этап 6) -->
+            <a class="c-btn c-btn--icon-end" href="#block-9" data-next aria-disabled="true">Дальше<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-arrow"></use></svg></span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="c-block" id="block-9" aria-labelledby="block-9-title" data-block="9">
+      <div class="l-container">
+        <div class="c-block__header">
+          <p class="c-block__meta"><span class="c-block__step" aria-hidden="true">9 / 9</span><span class="u-visually-hidden">Блок 9 из 9:</span><span>Заключение</span></p>
+          <h2 class="c-block__title" id="block-9-title">Курс пройден!</h2>
+        </div>
+
+        <div class="l-split">
+          <!-- Итог и бейдж: badge.js по course:finished — ≥ 10 крошек «Мастер тоста» + конфетти, иначе «Ещё не мастер» -->
+          <div class="c-figure c-result l-split__sticky" data-interactive="badge" data-block="9">
+            <p class="c-result__score">Твой результат: <b class="u-nowrap"><span data-crumbs-value>0</span> из <span data-crumbs-max>13</span> <svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-crumb"></use></svg><span class="u-visually-hidden">крошек</span></b></p>
+
+            <div class="c-badge" data-badge="master">
+              <img class="c-badge__img" src="assets/img/badge-master.svg" alt="" width="240" height="240" loading="lazy" decoding="async">
+              <p class="c-badge__name"><svg class="c-icon" aria-hidden="true" focusable="false"><use href="#icon-medal"></use></svg>Мастер тоста</p>
+            </div>
+
+            <!-- < 10 крошек: «Ещё не мастер» и грустный смайл вместо медали (решение заказчика 13.10.2026,
+                 в сценарии — «Почти мастер» с медалью и «Пройти упражнения ещё раз»; отдельной кнопки нет —
+                 «Пройти курс заново» ниже) -->
+            <div class="c-badge c-badge--not-yet" data-badge="not-yet" hidden>
+              <span class="c-badge__face" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-face-meh"></use></svg></span>
+              <p class="c-badge__name">Ещё не мастер</p>
+              <p class="c-badge__text">Готовить тосты неправильно не только невкусно, но и небезопасно!</p>
+            </div>
+          </div>
+
+          <div class="c-block__body">
+            <div>
+              <p class="c-checklist__title" id="block-9-learned">Теперь ты знаешь, как:</p>
+              <ul class="c-checklist" role="list" aria-labelledby="block-9-learned">
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>устроен тостер: слоты, рычаг, регулятор, «Стоп», поддон для крошек;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>подготовить его: устойчивое место, подальше от воды и штор, сухие руки;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>выбрать режим: начинай с «3» и подстраивай под себя;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>запустить и не отходить, пока тост готовится;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>достать тост: без металла, деревом или за край;</span></li>
+                <li class="c-checklist__item"><svg class="c-icon c-checklist__icon" aria-hidden="true" focusable="false"><use href="#icon-correct"></use></svg><span>действовать спокойно: дым — «Стоп» и вилку из розетки, огонь — не открывать и не заливать водой.</span></li>
+              </ul>
+            </div>
+
+            <aside class="c-callout c-callout--info" role="note" aria-label="Напутствие">
+              <p class="c-callout__title">Напутствие:</p>
+              <p>Завтра утром попробуй самостоятельно: поставь «3», опусти рычаг — и через пару минут у тебя будет золотистый тост. Не получилось идеально с первого раза? Это нормально: просто поверни регулятор на одну цифру. Главное — помни о безопасности, а вкус ты подберёшь под себя.</p>
+              <!-- Нейтральная формулировка (решение заказчика 13.10.2026; в сценарии — «подберёшь сам») -->
+            </aside>
+
+            <p class="c-bon-appetit">Приятного аппетита!<span class="c-bon-appetit__icons" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-crumb"></use></svg><svg class="c-icon" focusable="false"><use href="#icon-coffee"></use></svg></span></p>
+
+            <div class="c-task__actions">
+              <!-- Памятка (PDF, 5 шагов + 5 запретов): docs/memo.src.html → tools/build-memo.py. Обычная ссылка — работает
+                   без JS, на file:// и в LMS; target="_blank" — если браузер не скачает файл, PDF откроется в новой вкладке,
+                   а не вместо курса (SCO не выгружается, SCORM-сессия не теряется). -->
+              <a class="c-btn c-btn--icon-end" href="assets/memo.pdf" download="toaster-memo.pdf" target="_blank" rel="noopener" data-download>Скачать памятку<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-download"></use></svg></span></a>
+              <!-- С JS (main.js) — сброс прогресса (Course.state.reset + событие course:restart, интерактивы возвращаются
+                   в начальное состояние, блоки снова закрыты) и переход к #block-1, без перезагрузки страницы (в LMS
+                   перезагрузка завершила бы сессию SCO). Без JS — обычная ссылка к блоку 1: состояния без JS нет. -->
+              <a class="c-btn c-btn--secondary c-btn--icon-end" href="#block-1" data-restart>Пройти курс заново<span class="c-btn__icon" aria-hidden="true"><svg class="c-icon" focusable="false"><use href="#icon-replay"></use></svg></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="c-footer">
+    <div class="l-container">
+      <details class="c-sources">
+        <summary class="c-sources__summary"><svg class="c-icon c-sources__icon" aria-hidden="true" focusable="false"><use href="#icon-arrow"></use></svg>Источники</summary>
+        <div class="c-sources__body">
+          <p>Содержание курса основано на открытых материалах:</p>
+          <ol>
+            <li>Руководства по эксплуатации тостеров крупных производителей (Philips, Bosch, Tefal, Redmond): раздел «Меры безопасности», «Первое использование», «Устранение неисправностей».</li>
+            <li>Рекомендации МЧС России по безопасному использованию бытовых электроприборов и действиям при возгорании электроприборов.</li>
+            <li>ГОСТ IEC 60335-2-9 «Бытовые и аналогичные электрические приборы. Безопасность. Часть 2-9. Частные требования к грилям, тостерам и аналогичным переносным приборам для приготовления пищи».</li>
+            <li>Общедоступные материалы по пожарной безопасности на кухне (рекомендации служб пожарной безопасности, в т. ч. зарубежных — NFPA, Electrical Safety First).</li>
+          </ol>
+        </div>
+      </details>
+    </div>
+  </footer>
+</body>
+</html>

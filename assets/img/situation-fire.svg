@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360">
+<defs><linearGradient id="situation-fire-g-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E58C9"/><stop offset=".62" stop-color="#3E58C9"/><stop offset="1" stop-color="#2B40A6"/></linearGradient>
+<linearGradient id="situation-fire-g-top" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7189E3"/><stop offset="1" stop-color="#3E58C9"/></linearGradient>
+<clipPath id="situation-fire-clip"><path d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/></clipPath><linearGradient id="situation-fire-g-smoke" gradientUnits="userSpaceOnUse" x1="0" y1="110" x2="0" y2="8"><stop offset="0" stop-color="#8E9AB0" stop-opacity=".45"/><stop offset="1" stop-color="#8E9AB0" stop-opacity=".1"/></linearGradient></defs><g id="situation-fire-smoke"><path fill="url(#situation-fire-g-smoke)" d="M209.5 100C204.6 98.5 208.3 94.1 207.7 91.1C207.1 88.1 207.7 85.2 206 82.2C204.3 79.3 201 76.3 197.6 73.3C194.1 70.4 188.3 67.4 185.4 64.4C182.5 61.5 180.8 58.5 180.3 55.6C179.8 52.6 182.1 49.6 182.3 46.7C182.6 43.7 182.3 40.7 181.7 37.8C181.1 34.8 178.4 31.9 178.7 28.9C179 25.9 177.2 25 183.5 20C189.8 15 205.5 -1 216.5 -1C227.6 -1 245.2 15 249.6 20C253.9 25 245.9 25.9 242.7 28.9C239.5 31.9 233.1 34.8 230.2 37.8C227.4 40.7 225.6 43.7 225.7 46.7C225.7 49.6 229.2 52.6 230.6 55.6C232 58.5 233.7 61.5 234.2 64.4C234.7 67.4 233.4 70.4 233.7 73.3C233.9 76.3 234.7 79.3 235.7 82.2C236.8 85.2 239.6 88.1 239.8 91.1C240 94.1 242.2 98.5 237.1 100C232.1 101.5 214.4 101.5 209.5 100Z"/></g><g id="situation-fire-toaster" transform="translate(48 98) scale(.7)">
+<path id="situation-fire-shadow" fill="#BCCADC" d="M50 304Q50 316 64 316H352Q364 316 374 308L448 252Q456 244 444 244H150Z"/>
+<g id="situation-fire-body">
+<rect x="76" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="296" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="392" y="242" width="24" height="13" rx="5" fill="#131F5D"/>
+<path fill="#2B40A6" d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/>
+<path clip-path="url(#situation-fire-clip)" fill="url(#situation-fire-g-top)" d="M60 120L144 56H424L340 120Z"/>
+<path d="M417 82V206" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+<path id="situation-fire-groove" d="M382 118V214" stroke="#131F5D" stroke-width="6" stroke-linecap="round"/>
+</g>
+<g id="situation-fire-slots">
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M122.2 85.4H368.6L390.4 68.8H144Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M131.1 82.9H366.3L381.4 71.4H146.2Z"/>
+<path fill="#AFBDD2" d="M139 77.1H374.6L381.4 71.4H146.2Z"/>
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M90.2 109.8H336.6L358.5 93.1H112.1Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M99.2 107.2H334.4L349.5 95.7H114.3Z"/>
+<path fill="#AFBDD2" d="M106.8 101.4H342L349.5 95.7H114.3Z"/>
+</g>
+<g id="situation-fire-glow">
+<path fill="#E8622C" d="M134 82.4H364L371 77.1H141Z"/>
+<path fill="#FFB45E" d="M150 81H352L355 78.6H153Z"/>
+<path fill="#E8622C" d="M102 106.7H332L339 101.4H109Z"/>
+<path fill="#FFB45E" d="M118 105.3H320L323 102.9H121Z"/>
+</g>
+<g id="situation-fire-flames-back"><path fill="#E8622C" d="M158 82.6C154.4 52.9 165.6 36.4 171 16.6C178.2 37.7 197.6 52.9 194 82.6Z"/><path fill="#FFB45E" d="M168 82.6C166.2 66.3 171.3 57.2 174 46.3C177.6 57.9 187.8 66.3 186 82.6Z"/><path fill="#E8622C" d="M222 82.6C218.4 42.1 238.6 19.6 244 -7.4C251.2 21.4 261.6 42.1 258 82.6Z"/><path fill="#FFB45E" d="M232 82.6C230.2 60.3 240.7 47.9 243.4 33.1C247 48.9 251.8 60.3 250 82.6Z"/><path fill="#E8622C" d="M284 82.6C280.4 56.5 302.6 42 308 24.6C315.2 43.2 323.6 56.5 320 82.6Z"/><path fill="#FFB45E" d="M294 82.6C292.2 68.2 303.9 60.3 306.6 50.7C310.2 60.9 313.8 68.2 312 82.6Z"/><path fill="#E8622C" d="M332 82.6C328.4 61 340.6 49 346 34.6C353.2 50 371.6 61 368 82.6Z"/><path fill="#FFB45E" d="M342 82.6C340.2 70.7 345.9 64.1 348.6 56.2C352.2 64.6 361.8 70.7 360 82.6Z"/></g>
+<g id="situation-fire-front">
+<rect x="60" y="120" width="280" height="180" rx="22" fill="url(#situation-fire-g-front)"/>
+<path d="M84 122H316" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="3" stroke-linecap="round"/>
+<rect x="78" y="140" width="10" height="122" rx="5" fill="#FFFFFF" opacity=".16"/>
+</g>
+<g id="situation-fire-knob">
+<g fill="#E9EFF6"><circle cx="264.5" cy="197.5" r="2.6"/><circle cx="254.4" cy="166.4" r="2.6"/><circle cx="273.7" cy="139.9" r="2.6"/><circle cx="306.3" cy="139.9" r="2.6"/><circle cx="325.6" cy="166.4" r="2.6"/><circle cx="315.5" cy="197.5" r="2.6"/></g>
+<circle cx="290" cy="175" r="24" fill="#AFBDD2"/>
+<circle cx="290" cy="172" r="24" fill="#E9EFF6"/>
+<circle cx="290" cy="172" r="15" fill="#FFFFFF" opacity=".7"/>
+<path id="situation-fire-knob-pointer" d="M287.7 167.5L281.8 156" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-fire-stop">
+<rect x="268" y="247" width="44" height="22" rx="11" fill="#AFBDD2"/>
+<rect x="268" y="244" width="44" height="22" rx="11" fill="#E9EFF6"/>
+<path d="M285.5 250.5L294.5 259.5M294.5 250.5L285.5 259.5" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-fire-tray">
+<rect x="96" y="289" width="140" height="18" rx="7" fill="#AFBDD2"/>
+<rect x="96" y="286" width="140" height="17" rx="7" fill="#E9EFF6"/>
+<rect x="148" y="293" width="36" height="5" rx="2.5" fill="#AFBDD2"/>
+</g>
+<g id="situation-fire-lever" transform="translate(0 80)">
+<rect x="376" y="119" width="62" height="20" rx="8" fill="#131F5D"/>
+<rect x="381" y="122" width="52" height="4" rx="2" fill="#FFFFFF" opacity=".2"/>
+</g>
+</g><g id="situation-fire-flames"><path fill="#E8622C" d="M121 172.6C118.4 154.6 134.1 144.6 138 132.6C143.2 145.4 149.6 154.6 147 172.6Z"/><path fill="#FFB45E" d="M128.5 172.6C127.2 162.7 135.5 157.2 137.4 150.6C140 157.6 142.8 162.7 141.5 172.6Z"/><path fill="#E8622C" d="M165 172.6C162.4 146.5 170.1 132 174 114.6C179.2 133.2 193.6 146.5 191 172.6Z"/><path fill="#FFB45E" d="M172.5 172.6C171.2 158.2 174.7 150.3 176.6 140.7C179.2 150.9 186.8 158.2 185.5 172.6Z"/><path fill="#E8622C" d="M213 172.6C210.4 140.2 224.1 122.2 228 100.6C233.2 123.6 241.6 140.2 239 172.6Z"/><path fill="#FFB45E" d="M220.5 172.6C219.2 154.8 226.2 144.9 228.2 133C230.8 145.7 234.8 154.8 233.5 172.6Z"/><path fill="#E8622C" d="M253 172.6C250.4 151.9 257.1 140.4 261 126.6C266.2 141.3 281.6 151.9 279 172.6Z"/><path fill="#FFB45E" d="M260.5 172.6C259.2 161.2 262.1 154.9 264 147.3C266.6 155.4 274.8 161.2 273.5 172.6Z"/></g>
+</svg>

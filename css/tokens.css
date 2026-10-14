@@ -1,0 +1,204 @@
+/* ==========================================================================
+   tokens.css — дизайн-токены курса «Тостер без страха»
+   Единственный источник цветов, отступов, радиусов, теней и анимаций.
+   Базовые значения сверены с promomed.pro (см. docs/brand-notes.md).
+   Fluid-шкалы рассчитаны между вьюпортами 375px и 1280px.
+   ========================================================================== */
+
+:root {
+  /* ---------- Цвет: бренд ---------- */
+  --color-primary-900: #131F5D;   /* заголовки, основной текст, тёмные секции */
+  --color-primary-700: #2A3672;   /* hover для тёмных поверхностей */
+  --color-accent: #2C42B6;        /* кнопки, ссылки, активные элементы */
+  --color-accent-hover: #3E57D8;
+  --color-accent-active: #23379A;
+  --color-secondary: #919AC8;     /* декоративный: теги, рамки, иконки. Не для мелкого текста (контраст 2.7:1) */
+  --color-text-muted: #545E96;    /* приглушённый текст (≥ 4.5:1 на белом и bg-soft) */
+
+  /* ---------- Цвет: фоны и линии ---------- */
+  --color-bg: #FFFFFF;            /* фон страницы — белый (решение заказчика, отход от #F8F8F8 сайта) */
+  --color-bg-soft: #F5F8FB;       /* холодная подложка: чередующиеся секции, вторичные поверхности */
+  --color-bg-blue: #E0EAF2;       /* карточки, как на сайте */
+  --color-bg-blue-light: #EEF4F9; /* плашка «Совет», hover вторичных кнопок — светлее bg-blue, чтобы различались на белом */
+  --color-line: #D5DEE8;          /* обводки: холодный серый вместо нейтрального — в тон синей гамме на белом */
+  --color-line-light: #E6ECF2;
+  --color-on-dark: #FFFFFF;
+  --color-on-dark-muted: rgba(255, 255, 255, 0.64);
+  --color-on-dark-veil: rgba(255, 255, 255, 0.16);        /* кружок иконки в кнопке */
+  --color-on-dark-veil-strong: rgba(255, 255, 255, 0.26); /* он же при наведении */
+
+  /* ---------- Цвет: состояния ---------- */
+  --color-danger: #FF5F6C;        /* ТОЛЬКО плашки безопасности ⚠ (тот же коралловый, что --color-error — решение заказчика;
+                                     безопасность отличается иконкой warning и текстом «Важно») */
+  --color-danger-text: #C42F40;  /* текст danger: 5.5:1 на белом, 5.0:1 на danger-bg */
+  --color-danger-bg: #F5F5F5;
+  --color-danger-line: #F2C4C5;
+  /* «Верно» — мятный (решение заказчика). На белом ≈ 1.9:1 — только заливки, значки, обводки;
+     знак/цифра НА мятной заливке — --color-on-success (белый — выбор заказчика; статус всегда продублирован
+     текстом); зелёный ТЕКСТ — --color-success-text. */
+  --color-success: #60CEA6;
+  --color-on-success: #FFFFFF;   /* знаки и цифры на заливке success */
+  --color-success-text: #1A7F5B; /* 5.0:1 на белом, 4.6:1 на success-bg */
+  --color-success-bg: #F5F5F5;
+  --color-success-line: #BFEBDB;
+  /* «Неверно» в упражнениях — коралловый (решение заказчика), совпадает с danger:
+     danger — только безопасность. #FF5F6C на белом ≈ 2.9:1 — только заливки, значки, обводки
+     (статус всегда продублирован текстом); для ТЕКСТА — --color-error-text. */
+  --color-error: #FF5F6C;
+  --color-error-text: #C42F40;   /* 5.5:1 на белом, 5.0:1 на error-bg */
+  --color-error-bg: #FFF0F1;
+  --color-error-line: #FFC7CC;
+
+  /* ---------- Цвет: «тостовая» шкала (прогресс-бар) ---------- */
+  --toast-0: #FFFCF6;  /* белый хлеб, 0 % — дорожка прогресса */
+  --toast-1: #FFF6E5;  /* слегка подсушенный */
+  --toast-2: #F7E7C9;  /* светло-бежевый, ≈ 40 % */
+  --toast-3: #EFD9B0;  /* золотистый */
+  --toast-4: #E7CB97;  /* 100 % — самый тёмный цвет шкалы (решение заказчика) */
+  --toast-outline: #D9B273; /* корочка (контур) тоста в иконках и ломтике шапки — светлая, тонкая */
+  --toast-crust: #8C6428; /* ТЕКСТ на тостовых фонах («+2», чип): 5.3:1 */
+
+  /* ---------- Цвет: иллюстрации (только внутри SVG-иллюстраций) ----------
+     Ограниченная палитра flat-вектора, см. docs/illustration-guide.md.
+     Холодные — производные от бренда; тёплые — только хлеб, спирали/свечение, огонь.
+     Хлеб согласован с --toast-*, но это отдельные токены: тостовая шкала — только для UI прогресса.
+     Статичные SVG (<img>) используют эти же значения как hex — держать синхронно
+     (tools/build-illustrations.py читает палитру отсюда и проверяет файлы). */
+  --illu-body: #3E58C9;        /* корпус тостера, рукав */
+  --illu-body-shade: #2B40A6;  /* боковая грань корпуса, тень на корпусе */
+  --illu-body-light: #7189E3;  /* верхняя грань, блики на корпусе */
+  --illu-metal: #E9EFF6;       /* хром: ободки слотов, регулятор, кнопка, поддон */
+  --illu-metal-shade: #AFBDD2; /* хром в тени, штырьки вилки */
+  --illu-plastic: #131F5D;     /* тёмный пластик: рычаг, шнур, ножки, глубина слотов */
+  --illu-highlight: #FFFFFF;   /* блики (с opacity), искры */
+  --illu-heat: #E8622C;        /* раскалённые спирали, внешний язык пламени */
+  --illu-glow: #FFB45E;        /* оранжевое свечение, сердцевина пламени */
+  --illu-bread-0: #FBF1DC;     /* мякиш: сырой хлеб */
+  --illu-bread-1: #F2D9A2;     /* слегка подсушенный */
+  --illu-bread-2: #E0AE5C;     /* золотистый — «идеальный тост» */
+  --illu-bread-3: #B57434;     /* тёмный */
+  --illu-bread-4: #5E3F2A;     /* пережаренный */
+  --illu-bread-char: #3A281D;  /* корочка пережаренного */
+  --illu-wood: #CDB08A;        /* деревянные щипцы */
+  --illu-skin: #EDC9AE;        /* кисти рук */
+  --illu-counter: #D5E0EC;     /* столешница */
+  --illu-wall: #F4F7FB;        /* стена, фартук кухни */
+  --illu-smoke: #8E9AB0;       /* дым (всегда с opacity 0.3–0.8) */
+  --illu-shadow: #BCCADC;      /* падающие тени — отдельная фигура, без blur */
+
+  /* ---------- Типографика ---------- */
+  --font-family-base: "Onest", Arial, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;      /* заголовки на сайте — 500 */
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --font-size-display: clamp(2.5rem, 1.671rem + 3.536vw, 4.5rem);      /* 40 → 72 */
+  --font-size-h1: clamp(2rem, 1.378rem + 2.652vw, 3.5rem);             /* 32 → 56 */
+  --font-size-h2: clamp(1.625rem, 1.262rem + 1.547vw, 2.5rem);         /* 26 → 40 */
+  --font-size-h3: clamp(1.25rem, 1.095rem + 0.663vw, 1.625rem);        /* 20 → 26 */
+  --font-size-body-l: clamp(1.125rem, 1.047rem + 0.331vw, 1.3125rem);  /* 18 → 21 */
+  --font-size-body: clamp(1rem, 0.974rem + 0.110vw, 1.0625rem);        /* 16 → 17 */
+  --font-size-caption: clamp(0.8125rem, 0.787rem + 0.110vw, 0.875rem); /* 13 → 14 */
+  --font-size-overline: 0.75rem;                                       /* 12, капс */
+
+  --line-height-tight: 1.1;   /* display, h1 */
+  --line-height-heading: 1.2; /* h2, h3 */
+  --line-height-body: 1.5;
+  --letter-spacing-tight: -0.02em;   /* h3, вопросы заданий */
+  --letter-spacing-heading: -0.03em; /* h2 */
+  --letter-spacing-display: -0.04em; /* заголовки блоков, display */
+  /* Капслок в интерфейсе не используется (решение заказчика) — токена для разрядки капса нет. */
+
+  /* ---------- Отступы (шаг 4/8px) ---------- */
+  --space-0: 0;
+  --space-1: 0.25rem;  /*  4 */
+  --space-2: 0.5rem;   /*  8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.25rem;  /* 20 */
+  --space-6: 1.5rem;   /* 24 */
+  --space-8: 2rem;     /* 32 */
+  --space-10: 2.5rem;  /* 40 */
+  --space-12: 3rem;    /* 48 */
+  --space-16: 4rem;    /* 64 */
+  --space-20: 5rem;    /* 80 */
+  --space-24: 6rem;    /* 96 */
+
+  --space-section: clamp(2.5rem, 1.464rem + 4.420vw, 5rem);  /* 40 → 80, как section--pt/pb на сайте */
+  --space-gutter: clamp(1rem, 0.586rem + 1.768vw, 2rem);     /* 16 → 32, боковые поля */
+  --space-gap: clamp(1rem, 0.586rem + 1.768vw, 2rem);        /* 16 → 32, гэп сеток */
+  --space-card: clamp(1.25rem, 0.991rem + 1.105vw, 2rem);    /* 20 → 32, внутренний отступ карточки */
+
+  /* ---------- Размеры ---------- */
+  --container-max: 80rem;      /* 1280 */
+  --content-max: 46rem;        /* ≈ 736px — ширина колонки чтения */
+  --header-height: 4rem;       /* 64 */
+  --tap-target: 2.75rem;       /* 44 — минимальная зона нажатия */
+  --hotspot-dot: 1.5rem;       /* 24 — точка хотспота */
+  --hotspot-dot-l: 2.25rem;    /* 36 — точка на схеме блока 2 (×1,5) */
+  --btn-height: 3rem;          /* 48, как кнопки сайта на мобиле */
+  --icon-size-s: 1rem;
+  --icon-size-m: 1.5rem;
+  --icon-size-l: 2rem;
+  --carousel-figure-s: 16.25rem; /* 260 — кадр карусели бл. 5 на мобиле */
+  --carousel-figure-l: 27.5rem;  /* 440 — он же с 1024 */
+  --flip-perspective: 75rem;   /* 1200 — глубина 3D-переворота карточек (бл. 7) */
+  --badge-size: 15rem;         /* 240 — медаль в итогах (бл. 9) */
+  --confetti-spread: 10rem;    /* 160 — разлёт конфетти от медали */
+  --reveal-shift: var(--space-6); /* сдвиг блока при появлении (открытие по мере прохождения) */
+  --pick-media: 8.75rem;       /* 140 — картинка карточки «Чем достать?» (бл. 6) */
+
+  /* ---------- Радиусы ---------- */
+  --radius-xs: 0.5rem;   /*  8 — чипы-квадраты, поля */
+  --radius-s: 1rem;      /* 16 — тултипы, мелкие карточки */
+  --radius-card: 1.5rem; /* 24 — карточки, плашки */
+  --radius-card-l: 3rem; /* 48 — крупные «обложечные» карточки (на сайте ≈ 49–56px) */
+  --radius-pill: 3.5rem; /* 56 — кнопки-пилюли, чипы */
+  --radius-round: 50%;   /* круглые иконки */
+
+  /* ---------- Тени (мягкие, синеватые) ---------- */
+  --shadow-xs: 0 1px 2px rgba(19, 31, 93, 0.06);
+  --shadow-s: 0 4px 12px rgba(19, 31, 93, 0.08);
+  --shadow-m: 0 8px 24px rgba(19, 31, 93, 0.10);
+  --shadow-l: 0 16px 40px rgba(19, 31, 93, 0.14);
+  --shadow-header: 0 1px 0 var(--color-line-light), 0 4px 16px rgba(19, 31, 93, 0.04);
+
+  /* ---------- Фокус ---------- */
+  --focus-ring: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-accent);
+  --focus-outline: 3px solid var(--color-accent);
+  --focus-offset: 3px;
+
+  /* ---------- Анимации ---------- */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;   /* hover, фокус */
+  --duration-base: 250ms;   /* появление тултипа, обратной связи */
+  --duration-slow: 500ms;   /* переворот карточки (по сценарию ≈ 0,5 с) */
+  --duration-slower: 800ms; /* заливка прогресс-бара */
+  --duration-reward: 1200ms;   /* «+N» у счётчика крошек: всплыть и растаять */
+  --duration-confetti: 1600ms; /* конфетти бейджа (с задержкой частиц ≤ 2 с) */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.15);  /* лёгкий «пружинящий» отскок: крошки, галочки */
+
+  /* ---------- Слои ---------- */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-header: 100;
+  --z-tooltip: 200;
+  --z-overlay: 300;
+}
+
+/* Уважение к настройке «уменьшить движение»: все длительности → почти 0. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0.01ms;
+    --duration-fast: 0.01ms;
+    --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-slower: 0.01ms;
+    --duration-reward: 0.01ms;
+    --duration-confetti: 0.01ms;
+  }
+}

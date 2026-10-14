@@ -1,0 +1,131 @@
+/* ==========================================================================
+   layout.css — каркас страницы: контейнеры, сетки (l-), sticky-хедер
+   Mobile-first: базовые стили — 375px, расширения через min-width.
+   ========================================================================== */
+
+/* ---------- Контейнеры ---------- */
+.l-container {
+  width: 100%;
+  max-width: calc(var(--container-max) + 2 * var(--space-gutter));
+  margin-inline: auto;
+  padding-inline: var(--space-gutter);
+}
+
+.l-content {
+  max-width: var(--content-max);
+}
+
+/* ---------- Сетки ---------- */
+.l-grid {
+  display: grid;
+  gap: var(--space-gap);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .l-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .l-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .l-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+  .l-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .l-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Горизонтальный ряд с переносом */
+.l-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ---------- Main ---------- */
+.l-main {
+  display: block;
+}
+
+/* ==========================================================================
+   Sticky-хедер курса (c-header)
+   ========================================================================== */
+.c-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  box-shadow: var(--shadow-header);
+}
+
+.c-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--header-height);
+}
+
+.c-header__title {
+  display: none;
+  flex-shrink: 0;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-900);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.c-header__progress {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.c-header__crumbs {
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .c-header__inner { gap: var(--space-6); }
+  .c-header__title { display: block; }
+}
+
+/* Ссылка «Перейти к содержанию» */
+.c-skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: var(--z-overlay);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-900);
+  color: var(--color-on-dark);
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.c-skip-link:focus-visible {
+  transform: translateY(0);
+  color: var(--color-on-dark);
+}
+
+/* Текст + иллюстрация: на ≥1024 две колонки (5:6), иллюстрация «липнет» при прокрутке;
+   ниже — стопкой. <div class="l-split"><div>текст</div><figure class="c-figure l-split__sticky">…</figure></div> */
+.l-split {
+  display: grid;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .l-split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-20);
+  }
+
+  .l-split__sticky {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+  }
+}

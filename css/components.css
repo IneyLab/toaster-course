@@ -1,0 +1,2652 @@
+/* ==========================================================================
+   components.css — базовые компоненты (c-)
+   Только CSS. Все значения — через токены из tokens.css.
+   Состояния: модификаторы --x, флаги is-x, плюс aria-атрибуты.
+   ========================================================================== */
+
+/* ==========================================================================
+   c-icon — SVG-иконка из спрайта: <svg class="c-icon"><use href="#icon-arrow"/></svg>
+   ========================================================================== */
+.c-icon {
+  /* solid-иконки: цвет «вырезанного» знака; duo (тост): корочка и мякиш */
+  --icon-ink: var(--color-on-dark);
+  --icon-crust: var(--toast-outline);
+  --icon-crumb: var(--toast-1);
+  width: var(--icon-size-m);
+  height: var(--icon-size-m);
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.c-icon--s { width: var(--icon-size-s); height: var(--icon-size-s); }
+.c-icon--l { width: var(--icon-size-l); height: var(--icon-size-l); }
+
+/* Иконка в круге (как круглые контролы на сайте) */
+.c-icon-circle {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  flex-shrink: 0;
+  border-radius: var(--radius-round);
+  background-color: var(--color-bg-blue);
+  color: var(--color-accent);
+}
+
+.c-icon-circle--s { width: var(--space-8); height: var(--space-8); }
+.c-icon-circle--accent { background-color: var(--color-accent); color: var(--color-on-dark); }
+.c-icon-circle--danger { background-color: var(--color-danger); color: var(--color-on-dark); }
+.c-icon-circle--success { background-color: var(--color-success); color: var(--color-on-success); }
+
+/* ==========================================================================
+   c-btn — кнопка-пилюля
+   Модификаторы: --primary (по умолчанию) | --secondary | --ghost | --s | --block
+   Состояния: :hover, :active, :focus-visible, :disabled / [aria-disabled="true"]
+   Классы is-hover / is-active / is-focus — только для демонстрации в styleguide.html
+   ========================================================================== */
+.c-btn {
+  --btn-bg: var(--color-accent);
+  --btn-bg-hover: var(--color-accent-hover);
+  --btn-bg-active: var(--color-accent-active);
+  --btn-color: var(--color-on-dark);
+  --btn-border: transparent;
+  --btn-icon-bg: var(--color-on-dark-veil);
+  --btn-icon-bg-hover: var(--color-on-dark-veil-strong);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: var(--btn-height);
+  padding: var(--space-1) var(--space-6);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.c-btn:hover,
+.c-btn.is-hover {
+  background-color: var(--btn-bg-hover);
+  color: var(--btn-color);
+}
+
+.c-btn:active,
+.c-btn.is-active {
+  background-color: var(--btn-bg-active);
+  transform: scale(0.98);
+}
+
+.c-btn:focus-visible,
+.c-btn.is-focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Кнопка с иконкой в круге справа — фирменный приём сайта */
+.c-btn--icon-end {
+  padding-right: var(--space-1);
+}
+
+.c-btn__icon {
+  --btn-icon-size: calc(var(--btn-height) - var(--space-2) - 2px);
+  display: inline-grid;
+  place-items: center;
+  width: var(--btn-icon-size);
+  height: var(--btn-icon-size);
+  margin-inline-start: 0;
+  border-radius: var(--radius-round);
+  background-color: var(--btn-icon-bg);
+  transition:
+    margin var(--duration-base) var(--ease-emphasized),
+    background-color var(--duration-base) var(--ease-standard);
+}
+
+.c-btn__icon .c-icon {
+  width: var(--icon-size-s);
+  height: var(--icon-size-s);
+  transition: transform var(--duration-base) var(--ease-emphasized);
+}
+
+/* Наведение / фокус: кружок уезжает вперёд на полкорпуса — кнопка плавно растягивается */
+.c-btn:hover .c-btn__icon,
+.c-btn:focus-visible .c-btn__icon,
+.c-btn.is-hover .c-btn__icon {
+  margin-inline-start: calc(var(--btn-icon-size) / 2);
+  background-color: var(--btn-icon-bg-hover);
+}
+
+.c-btn:hover .c-btn__icon .c-icon,
+.c-btn.is-hover .c-btn__icon .c-icon { transform: translateX(2px); }
+
+.c-btn--secondary {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--color-bg-blue-light);
+  --btn-bg-active: var(--color-bg-blue);
+  --btn-color: var(--color-accent);
+  --btn-border: var(--color-accent);
+  --btn-icon-bg: var(--color-bg-blue);
+  --btn-icon-bg-hover: var(--color-bg-blue);
+}
+
+.c-btn--ghost {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--color-bg-blue-light);
+  --btn-bg-active: var(--color-bg-blue);
+  --btn-color: var(--color-accent);
+  --btn-icon-bg: var(--color-bg-blue);
+  --btn-icon-bg-hover: var(--color-bg-blue);
+  padding-inline: var(--space-4);
+}
+
+.c-btn--s {
+  --btn-height: 2.5rem;
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-caption);
+}
+
+.c-btn--block { width: 100%; }
+
+.c-btn:disabled,
+.c-btn[aria-disabled="true"] {
+  --btn-bg: var(--color-line-light);
+  --btn-bg-hover: var(--color-line-light);
+  --btn-bg-active: var(--color-line-light);
+  --btn-color: var(--color-text-muted);
+  --btn-border: transparent;
+  --btn-icon-bg: rgba(19, 31, 93, 0.06);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.c-btn--secondary:disabled,
+.c-btn--secondary[aria-disabled="true"] {
+  --btn-bg: transparent;
+  --btn-border: var(--color-line);
+}
+
+.c-btn--ghost:disabled,
+.c-btn--ghost[aria-disabled="true"] {
+  --btn-bg: transparent;
+}
+
+.c-btn:disabled .c-btn__icon,
+.c-btn[aria-disabled="true"] .c-btn__icon { margin-inline-start: 0; background-color: var(--btn-icon-bg); }
+.c-btn:disabled .c-btn__icon .c-icon,
+.c-btn[aria-disabled="true"] .c-btn__icon .c-icon { transform: none; }
+
+/* ==========================================================================
+   c-block — секция-блок курса
+   <section class="c-block" id="block-2" aria-labelledby="block-2-title">
+   Модификаторы: --alt (голубой фон) | --dark
+   Состояния (ставит main.js, только с JS): is-locked — ещё не открыт (в курсе всегда вместе с hidden: не виден,
+   не в порядке табуляции и не в дереве доступности); is-revealing — плавное появление при открытии.
+   ========================================================================== */
+.c-block {
+  position: relative;
+  padding-block: var(--space-section);
+}
+
+.c-block + .c-block {
+  border-top: 1px solid var(--color-line-light);
+}
+
+.c-block--alt { background-color: var(--color-bg-soft); }
+
+.c-block--dark {
+  background-color: var(--color-primary-900);
+  color: var(--color-on-dark);
+}
+
+.c-block__header {
+  margin-bottom: var(--space-10);
+}
+
+/* Метка блока: «3 / 9  Подготовка к работе». Время прохождения не показываем. */
+.c-block__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+}
+
+.c-block__step {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.c-block__title {
+  max-width: 16ch;
+  font-size: var(--font-size-h1);
+  line-height: 1.02;
+  letter-spacing: var(--letter-spacing-display);
+}
+
+.c-block__body {
+  max-width: var(--content-max);
+}
+
+.c-block__body > * + * { margin-top: var(--space-6); }
+
+.c-block__footer {
+  margin-top: var(--space-10);
+}
+
+@media (min-width: 768px) {
+  .c-block__header { margin-bottom: var(--space-16); }
+}
+
+.c-block--dark .c-block__meta { color: var(--color-on-dark-muted); }
+.c-block--dark .c-block__step { color: var(--color-on-dark); }
+
+/* Заблокированный (ещё не открытый) блок. В курсе секция ещё и hidden — этот вид виден только
+   в styleguide (демо без hidden) и как страховка, если hidden снят раньше is-locked. */
+.c-block.is-locked .c-block__body,
+.c-block.is-locked .c-block__footer {
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Только что открытый блок: всплывает снизу (при reduced-motion длительность ≈ 0 — сразу) */
+.c-block.is-revealing {
+  animation: c-block-reveal var(--duration-slow) var(--ease-out) both;
+}
+
+@keyframes c-block-reveal {
+  from { opacity: 0; transform: translateY(var(--reveal-shift)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   c-card — карточка
+   Модификаторы: --blue | --dark | --interactive | --flat
+   ========================================================================== */
+.c-card {
+  position: relative;
+  display: block;
+  padding: var(--space-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-light); /* на белом фоне карточке нужна граница, одной тени мало */
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-s);
+}
+
+.c-card > * + * { margin-top: var(--space-3); }
+
+.c-card__title {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.c-card__text { color: var(--color-text-muted); }
+
+.c-card--flat { box-shadow: none; border: 1px solid var(--color-line-light); }
+
+.c-card--blue {
+  border-color: transparent;
+  background-color: var(--color-bg-blue);
+  box-shadow: none;
+}
+
+.c-card--dark {
+  border-color: transparent;
+  background-color: var(--color-primary-900);
+  color: var(--color-on-dark);
+  box-shadow: none;
+}
+
+.c-card--dark .c-card__text { color: var(--color-on-dark-muted); }
+
+.c-card--interactive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start; /* button по умолчанию центрирует содержимое по вертикали */
+  width: 100%;
+  border: 2px solid var(--color-line-light);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-base) var(--ease-standard);
+}
+
+.c-card--interactive .c-card__text { color: var(--color-primary-900); }
+
+.c-card--interactive:hover,
+.c-card--interactive.is-hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-m);
+}
+
+.c-card--interactive:active,
+.c-card--interactive.is-active {
+  transform: scale(0.97);
+  box-shadow: var(--shadow-xs);
+}
+
+.c-card--interactive:focus-visible,
+.c-card--interactive.is-focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Выбор до проверки (несколько вариантов) */
+.c-card--interactive[aria-pressed="true"],
+.c-card--interactive.is-selected {
+  border-color: var(--color-accent);
+}
+
+/* Вариант с буквой (А / Б / В): крупная буква-заголовок */
+.c-card--choice .c-card__title {
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-heading);
+}
+
+/* Состояния ответа — без цветной обводки и заливки: значок в углу + тень,
+   остальные варианты в группе .c-choices.is-answered отступают */
+.c-card.is-correct,
+.c-card.is-incorrect { border-color: var(--color-line-light); }
+
+.c-card.is-correct { box-shadow: var(--shadow-m); }
+.c-card.is-incorrect { animation: c-card-shake 0.4s var(--ease-standard) 1; }
+
+.c-choices.is-answered .c-card:not(.is-correct) {
+  opacity: 0.45;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+/* Тени состояний выше перебивают кольцо фокуса — возвращаем его (этап 8: фокус пропадал после «Проверить») */
+.c-card.is-correct:focus-visible,
+.c-choices.is-answered .c-card:focus-visible { box-shadow: var(--focus-ring); }
+
+@keyframes c-card-shake {
+  0%, 100% { translate: 0; }
+  25% { translate: -6px; }
+  75% { translate: 6px; }
+}
+
+.c-card:disabled,
+.c-card[aria-disabled="true"] {
+  cursor: default;
+}
+
+.c-card:disabled:not(.is-correct, .is-incorrect),
+.c-card[aria-disabled="true"]:not(.is-correct, .is-incorrect) {
+  transform: none;
+}
+
+/* Значок состояния в правом верхнем углу: <svg class="c-icon c-card__badge c-card__badge--correct">
+   — последним элементом карточки (иначе он сдвигает отступы содержимого) */
+.c-card__badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: var(--icon-size-l);
+  height: var(--icon-size-l);
+  animation: c-badge-pop var(--duration-slow) var(--ease-emphasized) 1;
+}
+
+.c-card__badge--correct { color: var(--color-success); }
+.c-card__badge--incorrect { color: var(--color-error); }
+
+@keyframes c-badge-pop {
+  from { scale: 0.4; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-card.is-incorrect, .c-card__badge { animation: none; }
+}
+
+/* ==========================================================================
+   c-callout — «Совет» (info: простой текст без рамки) и «Важно» (danger: белая карточка с тенью)
+   Совет: <aside class="c-callout c-callout--info" role="note" aria-label="Совет">
+            <p class="c-callout__title">Первый запуск.</p><p>…</p></aside>   (без иконки)
+   Важно: <aside class="c-callout c-callout--danger" role="note" aria-label="Важно">
+            <span class="c-callout__tile"><svg class="c-icon"><use href="#icon-warning"/></svg></span>
+            <div class="c-callout__body"><p class="c-callout__title">Важно</p><p>…</p></div></aside>
+   ========================================================================== */
+.c-callout {
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-s);
+}
+
+.c-callout > * + *,
+.c-callout__body > * + * { margin-top: var(--space-3); }
+
+.c-callout__title {
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.01em;
+}
+
+.c-callout--info .c-callout__title { color: var(--color-accent); }
+
+.c-callout--danger {
+  --nojs-display: grid;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.c-callout__tile {
+  display: grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-s);
+  background-color: var(--color-danger);
+  color: var(--color-on-dark);
+}
+
+/* белый треугольник на красной плитке, знак «!» — цветом плитки */
+.c-callout__tile .c-icon { --icon-ink: var(--color-danger); }
+
+.c-callout--danger .c-callout__title {
+  color: var(--color-danger-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Компактная (мелкая подпись под схемой) */
+.c-callout--compact {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-caption);
+}
+
+@media (min-width: 768px) {
+  .c-callout { padding: var(--space-8) var(--space-8) var(--space-10); }
+  .c-callout--compact { padding: var(--space-4) var(--space-6); }
+}
+
+/* «Совет» — простой текст без рамки, как вводный абзац (решение заказчика 12.10.2026);
+   рамку и тень сохраняет только «Важно». Начало совета (заголовок / c-callout__lead) — синим. */
+.c-callout.c-callout--info {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: var(--font-size-body-l);
+  line-height: 1.55;
+}
+
+/* «Мелко» под схемой (бл. 2) */
+.c-callout.c-callout--info.c-callout--compact { font-size: var(--font-size-body); }
+
+/* ==========================================================================
+   c-chip — тег / чип
+   Модификаторы: --accent | --success | --danger | --toast
+   Интерактивный: <button class="c-chip" aria-pressed="false">
+   ========================================================================== */
+.c-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 1.75rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.c-chip:hover { border-color: var(--color-accent); color: var(--color-accent); }
+a.c-chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+.c-chip .c-icon { width: 0.875rem; height: 0.875rem; }
+
+.c-chip--accent { background-color: var(--color-bg-blue); border-color: transparent; color: var(--color-accent); }
+.c-chip--success { background-color: var(--color-success-bg); border-color: transparent; color: var(--color-success-text); }
+.c-chip--danger { background-color: var(--color-danger-bg); border-color: transparent; color: var(--color-danger-text); }
+.c-chip--toast { background-color: var(--toast-1); border-color: transparent; color: var(--toast-crust); }
+
+button.c-chip {
+  min-height: var(--tap-target);
+  padding-inline: var(--space-4);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+}
+
+button.c-chip:hover { border-color: var(--color-accent); color: var(--color-accent); }
+button.c-chip:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+button.c-chip[aria-pressed="true"] {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-dark);
+}
+
+/* ==========================================================================
+   c-hotspot — точка на интерактивной схеме + c-tooltip
+   <button class="c-hotspot" aria-expanded="false" aria-controls="tip-1">
+   Состояния: aria-expanded="true" (открыт сейчас) | is-done (изучен, зелёный)
+   ========================================================================== */
+.c-hotspot {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c-hotspot__dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--hotspot-dot);
+  height: var(--hotspot-dot);
+  border: 3px solid var(--color-bg);
+  border-radius: var(--radius-round);
+  background-color: var(--color-accent);
+  color: var(--color-on-dark);
+  font-size: var(--font-size-overline);
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-s);
+  transition: background-color var(--duration-base) var(--ease-standard), transform var(--duration-base) var(--ease-emphasized);
+}
+
+/* Пульсирующее кольцо */
+.c-hotspot__dot::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid var(--color-accent);
+  animation: c-hotspot-pulse 1.8s var(--ease-out) infinite;
+}
+
+@keyframes c-hotspot-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.c-hotspot:hover .c-hotspot__dot { transform: scale(1.12); background-color: var(--color-accent-hover); }
+.c-hotspot:focus-visible,
+.c-hotspot.is-focus { outline: none; box-shadow: var(--focus-ring); }
+
+.c-hotspot[aria-expanded="true"] .c-hotspot__dot {
+  transform: scale(1.12);
+  background-color: var(--color-primary-900);
+}
+
+.c-hotspot[aria-expanded="true"] .c-hotspot__dot::before,
+.c-hotspot.is-done .c-hotspot__dot::before { animation: none; opacity: 0; }
+
+.c-hotspot.is-done .c-hotspot__dot { background-color: var(--color-success); color: var(--color-on-success); }
+
+/* --light: точка поверх насыщенной (синей) графики — белая с синей цифрой */
+.c-hotspot--light .c-hotspot__dot {
+  border-color: var(--color-accent);
+  background-color: var(--color-bg);
+  color: var(--color-accent);
+  box-shadow: var(--shadow-m);
+}
+
+.c-hotspot--light .c-hotspot__dot::before { border-color: var(--color-bg); }
+.c-hotspot--light:hover .c-hotspot__dot { background-color: var(--color-bg-blue-light); }
+
+.c-hotspot--light[aria-expanded="true"] .c-hotspot__dot {
+  border-color: var(--color-bg);
+  background-color: var(--color-primary-900);
+  color: var(--color-on-dark);
+}
+
+.c-hotspot--light.is-done .c-hotspot__dot {
+  border-color: var(--color-bg);
+  background-color: var(--color-success);
+  color: var(--color-on-success);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-hotspot__dot::before { animation: none; opacity: 0.5; transform: scale(1.4); }
+}
+
+.c-tooltip {
+  position: relative;
+  z-index: var(--z-tooltip);
+  width: min(18rem, calc(100vw - 2 * var(--space-gutter)));
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-s);
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-l);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  animation: c-tooltip-in var(--duration-base) var(--ease-standard);
+}
+
+.c-tooltip[hidden] { display: none; }
+
+.c-tooltip__title {
+  display: block;
+  margin-bottom: var(--space-1);
+  padding-right: var(--space-8);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-tooltip__close {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.c-tooltip__close:hover { background-color: var(--color-bg-blue-light); color: var(--color-primary-900); }
+.c-tooltip__close:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+/* Стрелка: по умолчанию тултип над точкой, стрелка снизу */
+.c-tooltip::after {
+  content: "";
+  position: absolute;
+  left: var(--tooltip-arrow-x, 50%);
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 0 0 3px 0;
+}
+
+.c-tooltip--below::after {
+  top: -6px;
+  bottom: auto;
+  border-radius: 3px 0 0 0;
+}
+
+@keyframes c-tooltip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   c-progress — прогресс-бар «поджаривающийся ломтик»
+   Управление: style="--progress: 0.4" + data-stage="0..4" + aria-valuenow
+   ========================================================================== */
+.c-progress {
+  --progress: 0;
+  --toast-color: var(--toast-0);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.c-progress[data-stage="1"] { --toast-color: var(--toast-1); }
+.c-progress[data-stage="2"] { --toast-color: var(--toast-2); }
+.c-progress[data-stage="3"] { --toast-color: var(--toast-3); }
+.c-progress[data-stage="4"] { --toast-color: var(--toast-4); }
+
+/* Ломтик слева (силуэт как в иконке crumb): корочка постоянная, мякиш = текущий оттенок тоста */
+.c-progress__slice {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.c-progress__slice-crust { fill: var(--toast-outline); }
+
+.c-progress__slice-fill {
+  fill: var(--toast-color);
+  transition: fill var(--duration-slower) var(--ease-standard);
+}
+
+.c-progress__track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 3rem;
+  height: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background-color: var(--toast-0);
+}
+
+.c-progress__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--progress) * 100%);
+  border-radius: inherit;
+  /* Всегда заметные тона шкалы: на светлой дорожке (--toast-0) заливка видна с первого блока.
+     «Поджаривание» по стадиям показывает ломтик слева (--toast-color), а не цвет заливки. */
+  background-image: linear-gradient(90deg, var(--toast-3), var(--toast-4));
+  box-shadow: inset 0 0 0 1px var(--toast-outline);
+  transition: width var(--duration-slower) var(--ease-standard);
+}
+
+.c-progress__label {
+  flex-shrink: 0;
+  min-width: 2.5rem;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* ==========================================================================
+   c-crumbs — счётчик крошек
+   <div class="c-crumbs" role="status" aria-live="polite" aria-atomic="true">…
+     <span class="c-crumbs__delta" data-crumbs-delta aria-hidden="true" hidden>+2</span></div>
+   Состояние: is-bumped — при начислении ломтик подпрыгивает, «+N» всплывает под счётчиком и тает
+   (при reduced-motion main.js анимацию не запускает). Живой регион читает новое значение целиком.
+   ========================================================================== */
+.c-crumbs {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--toast-0);
+  border: 1px solid var(--toast-1);
+  color: var(--color-primary-900);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.c-crumbs__icon {
+  display: inline-grid;
+  place-items: center;
+}
+
+.c-crumbs__icon .c-icon { width: 1.5rem; height: 1.5rem; }
+
+.c-crumbs__max { color: var(--color-text-muted); font-weight: var(--font-weight-regular); }
+
+.c-crumbs.is-bumped .c-crumbs__icon {
+  animation: c-crumbs-bump var(--duration-slow) var(--ease-emphasized);
+}
+
+@keyframes c-crumbs-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3) rotate(-8deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* «+2» — тостовая плашка под счётчиком (не сдвигает шапку); в покое скрыта */
+.c-crumbs__delta {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--toast-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--toast-1);
+  color: var(--toast-crust);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  box-shadow: var(--shadow-s);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.c-crumbs.is-bumped .c-crumbs__delta {
+  animation: c-crumbs-delta var(--duration-reward) var(--ease-out) both;
+}
+
+@keyframes c-crumbs-delta {
+  0% { opacity: 0; transform: translateY(calc(var(--space-2) * -1)) scale(0.8); }
+  20% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(var(--space-2)); }
+}
+
+/* ==========================================================================
+   c-feedback — обратная связь «верно / неверно»: белая карточка, плитка статуса, награда
+   <div class="c-feedback c-feedback--correct" role="status">
+     <span class="c-feedback__tile" aria-hidden="true"><svg class="c-icon"><use href="#icon-check"/></svg></span>
+     <p class="c-feedback__text"><b>Точно!</b> …</p>
+     <span class="c-feedback__reward"><svg class="c-icon" aria-hidden="true"><use href="#icon-crumb"/></svg>+2</span>
+   </div>
+   ========================================================================== */
+.c-feedback {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-m);
+  animation: c-feedback-in var(--duration-slow) var(--ease-standard);
+}
+
+.c-feedback[hidden] { display: none; }
+
+.c-feedback__tile {
+  display: grid;
+  place-items: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-s);
+}
+
+.c-feedback__tile .c-icon { width: var(--icon-size-m); height: var(--icon-size-m); }
+
+.c-feedback__text { align-self: center; }
+.c-feedback__text b { font-weight: var(--font-weight-semibold); }
+
+.c-feedback--correct .c-feedback__tile { background-color: var(--color-success); color: var(--color-on-success); }
+.c-feedback--incorrect .c-feedback__tile { background-color: var(--color-error); color: var(--color-on-dark); }
+
+.c-feedback__reward {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  grid-column: 2;
+  justify-self: start;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--toast-0);
+  color: var(--toast-crust);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.c-feedback__reward .c-icon { width: var(--icon-size-m); height: var(--icon-size-m); }
+
+@media (min-width: 768px) {
+  .c-feedback { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+  .c-feedback__reward { grid-column: auto; }
+}
+
+@keyframes c-feedback-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   c-steps — нумерованные шаги «01 / 02 / 03» с тонкими разделителями
+   <ol class="c-steps"><li class="c-steps__item"><span class="c-steps__num" aria-hidden="true">01</span>
+     <p><b>Выбери место.</b> …</p></li></ol>
+   Номер декоративный (aria-hidden): нумерацию для скринридера даёт <ol>.
+   ========================================================================== */
+.c-steps {
+  max-width: 62ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-steps__item {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--color-line-light);
+}
+
+.c-steps__item:first-child { padding-top: 0; border-top: 0; }
+.c-steps__item:last-child { border-bottom: 1px solid var(--color-line-light); }
+
+.c-steps__num {
+  color: var(--color-text-muted); /* не --color-secondary: 2.7:1 на белом (этап 8, контраст) */
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.c-steps p { line-height: 1.6; }
+.c-steps b { font-weight: var(--font-weight-semibold); }
+
+/* ==========================================================================
+   c-figure — карточка с иллюстрацией: белая, с тенью (основной носитель иллюстраций)
+   <figure class="c-figure"><img src="assets/img/….svg" alt="…"></figure>   Модификатор: --blue
+   ========================================================================== */
+.c-figure {
+  margin: 0;
+  padding: var(--space-card);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card-l);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-s);
+}
+
+.c-figure > img,
+.c-figure > svg { width: 100%; height: auto; }
+
+.c-figure--blue {
+  border-color: transparent;
+  background-color: var(--color-bg-blue);
+  box-shadow: none;
+}
+
+
+/* ==========================================================================
+   c-intro — первый экран курса (блок 1): заголовок, обложка, вводный текст, кнопка
+   <div class="c-intro"><div class="c-block__header c-intro__head">…</div>
+     <figure class="c-figure c-intro__cover">…</figure>
+     <div class="c-block__body c-intro__body">…</div><div class="c-intro__foot">…</div></div>
+   Мобила — стопкой (обложка сразу под заголовком, кроп 4:3); ≥1024 — текст слева, обложка справа.
+   ========================================================================== */
+.c-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "head" "cover" "body" "foot";
+  row-gap: var(--space-10);
+}
+
+.c-intro__head { grid-area: head; margin-bottom: 0; }
+.c-intro__cover { grid-area: cover; }
+.c-intro__body { grid-area: body; }
+.c-intro__foot { grid-area: foot; }
+
+.c-intro__lead {
+  max-width: 24ch;
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-heading);
+}
+
+.c-intro__text {
+  font-size: var(--font-size-body-l);
+  line-height: 1.55;
+}
+
+/* Обложка 16:9; на узком экране — центр-кроп 4:3 (тостер, тост и вилка остаются в кадре) */
+.c-intro__cover > img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.c-intro__body > * + * { margin-top: var(--space-8); }
+
+@media (min-width: 768px) {
+  .c-intro__cover > img { aspect-ratio: 16 / 9; }
+}
+
+@media (min-width: 1024px) {
+  .c-intro {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-areas: "head cover" "body cover" "foot cover";
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--space-20);
+  }
+
+  .c-intro__cover {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+    align-self: start;
+  }
+}
+
+/* ==========================================================================
+   c-checklist — список с галочками «ты научишься» (иконка correct вместо ✅)
+   <p class="c-checklist__title">…</p>
+   <ul class="c-checklist" role="list"><li class="c-checklist__item">
+     <svg class="c-icon c-checklist__icon" aria-hidden="true"><use href="#icon-correct"/></svg><span>…</span></li></ul>
+   ========================================================================== */
+.c-checklist__title {
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-checklist {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-checklist__item {
+  display: grid;
+  grid-template-columns: var(--icon-size-m) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--color-line-light);
+  line-height: 1.5;
+}
+
+.c-checklist__item:last-child { border-bottom: 1px solid var(--color-line-light); }
+
+.c-checklist__icon {
+  color: var(--color-success);
+  /* выравнивание круга по первой строке текста */
+  margin-top: calc((1.5em - var(--icon-size-m)) / 2);
+}
+
+/* ==========================================================================
+   c-crumbs-note — строка про крошки: тостовая плашка с иконкой crumb
+   <p class="c-crumbs-note"><span class="c-crumbs-note__icon" aria-hidden="true"><svg class="c-icon">…</svg></span>
+     <span>…</span></p>
+   Тостовая шкала допустима: плашка рассказывает о крошках.
+   ========================================================================== */
+.c-crumbs-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--toast-1);
+  border-radius: var(--radius-card);
+  background-color: var(--toast-0);
+  line-height: 1.5;
+}
+
+.c-crumbs-note b { font-weight: var(--font-weight-semibold); }
+
+.c-crumbs-note__icon {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-round);
+  background-color: var(--toast-1);
+}
+
+.c-crumbs-note__icon .c-icon { width: var(--icon-size-l); height: var(--icon-size-l); }
+
+/* ==========================================================================
+   c-hint — строка-подсказка к интерактиву (👆 → иконка tap)
+   <p class="c-hint"><svg class="c-icon c-hint__icon" aria-hidden="true"><use href="#icon-tap"/></svg><span>…</span></p>
+   ========================================================================== */
+.c-hint {
+  display: grid;
+  grid-template-columns: var(--icon-size-m) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  font-size: var(--font-size-body-l);
+  line-height: var(--line-height-body);
+}
+
+.c-hint__icon {
+  color: var(--color-accent);
+  margin-top: calc((1.5em - var(--icon-size-m)) / 2);
+}
+
+/* Иконка внутри строки текста (❄ в советах, ✕ в подсказке) */
+.c-icon--inline {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.2em;
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   c-hotspots — схема с точками и подсказками (блок 2, data-interactive="hotspots")
+   <figure class="c-figure">
+     <div class="c-hotspots__stage"> инлайн-SVG + <button class="c-hotspot c-hotspot--light" style="--x: 46.2%; --y: 24.7%"> </div>
+     <ol class="c-hotspots__tips"><li class="c-hotspots__tip" style="--x: 46.2%" hidden data-nojs-show>…</li></ol>
+   </figure>
+   Без JS подсказки — нумерованный список под схемой; с JS открытая подсказка (без hidden)
+   показывается тултипом под схемой, стрелка — над столбцом своей точки (--x).
+   ========================================================================== */
+.c-hotspots > * + * { margin-top: var(--space-6); }
+.c-hotspots > .c-block__next,
+.c-task > .c-block__next { margin-top: var(--space-10); }
+
+.c-hotspots__stage { position: relative; }
+.c-hotspots__stage > svg { display: block; width: 100%; height: auto; }
+
+.c-hotspots__stage .c-hotspot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+}
+
+/* Точки на схеме — в полтора раза крупнее базовых (зона нажатия остаётся --tap-target) */
+.c-hotspots__stage .c-hotspot__dot {
+  width: var(--hotspot-dot-l);
+  height: var(--hotspot-dot-l);
+  font-size: calc(var(--font-size-overline) * 1.5);
+}
+
+.c-hotspots__tips {
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-hotspots__tip {
+  --nojs-display: grid;
+  display: grid;
+  grid-template-columns: var(--hotspot-dot-l) minmax(0, 1fr);
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--color-line-light);
+  line-height: var(--line-height-body);
+}
+
+.c-hotspots__tip:last-child { border-bottom: 1px solid var(--color-line-light); }
+
+/* Номер — как белая точка на схеме, того же размера */
+.c-hotspots__num {
+  display: grid;
+  place-items: center;
+  width: var(--hotspot-dot-l);
+  height: var(--hotspot-dot-l);
+  margin-top: calc((1.5em - var(--hotspot-dot-l)) / 2);
+  border: 3px solid var(--color-accent);
+  border-radius: var(--radius-round);
+  color: var(--color-accent);
+  font-size: calc(var(--font-size-overline) * 1.5);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.c-hotspots__title b { font-weight: var(--font-weight-semibold); }
+.c-hotspots__body > * + * { margin-top: var(--space-1); }
+
+/* С JS: открытая подсказка — тултип под схемой. .is-tooltip — то же для витрины */
+.has-js .c-hotspots__tip,
+.c-hotspots__tip.is-tooltip {
+  position: relative;
+  padding: var(--space-4) var(--space-12) var(--space-4) var(--space-5);
+  border: 0;
+  border-radius: var(--radius-s);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-l);
+  animation: c-tooltip-in var(--duration-base) var(--ease-standard);
+}
+
+.has-js .c-hotspots__tip::before,
+.c-hotspots__tip.is-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: clamp(var(--space-6), var(--x, 50%), calc(100% - var(--space-6)));
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  border-radius: 3px 0 0 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.c-hotspots__tip .c-tooltip__close { top: var(--space-1); right: var(--space-1); }
+
+/* ==========================================================================
+   c-feedback-area — живой регион вокруг сообщений обратной связи
+   <div class="c-feedback-area" role="status" aria-live="polite"><div class="c-feedback" hidden>…</div></div>
+   Регион в DOM с самого начала — появление сообщения внутри него зачитывается.
+   ========================================================================== */
+.c-feedback-area > * + * { margin-top: var(--space-4); }
+.c-feedback { --nojs-display: grid; }
+
+/* ==========================================================================
+   c-task — задание внутри блока: вопрос (h3), иллюстрация, варианты, кнопка, обратная связь
+   <fieldset class="c-task"> (выбор) | <div class="c-task"> (порядок)
+     <legend class="c-task__legend"><h3 class="c-task__question">…</h3></legend>
+   ========================================================================== */
+.c-task {
+  min-width: 0;
+  margin: var(--space-16) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.c-task > :not(:first-child) { margin-top: var(--space-6); } /* сильнее margin: 0 у c-figure / c-order */
+
+.c-task__legend {
+  width: 100%;
+  margin-bottom: var(--space-6);
+  padding: 0;
+}
+
+.c-task > .c-task__legend + * { margin-top: 0; }
+
+.c-task__question {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-heading);
+}
+
+.c-task__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ==========================================================================
+   c-choices — группа вариантов-карточек (c-card--interactive c-card--choice)
+   1 колонка на мобиле; --3 — три колонки с 768. Состояние группы is-answered — см. c-card.
+   ========================================================================== */
+.c-choices {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .c-choices--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ==========================================================================
+   c-zones — буквы-метки зон поверх иллюстрации (кухня; в курсе не используется — упражнение бл. 3 удалено)
+   <div class="c-zones"> инлайн-SVG <span class="c-zones__mark" style="--x: 16.6%; --y: 8%" aria-hidden="true">А</span></div>
+   Метка декоративная: выбор — карточками-вариантами (и кликом по зоне — этап 5).
+   ========================================================================== */
+.c-zones { position: relative; }
+.c-zones > svg { display: block; width: 100%; height: auto; }
+
+.c-zones__mark {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-round);
+  background-color: var(--color-bg);
+  color: var(--color-accent);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  box-shadow: var(--shadow-m);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   c-sim — симулятор степени поджаривания (блок 4, data-interactive="toast-slider")
+   <div class="c-sim" data-value="3"> регулятор + ломтик + c-range + подписи-состояния
+   Состояние задаёт только data-value (1–6) на корне: поворот стрелки, цвет ломтика, заливка
+   ползунка — CSS ниже. JS меняет data-value и hidden у подписей.
+   Цвета ломтика — палитра иллюстраций: переменные передаются внутрь инлайн-SVG toast-slice.
+   ========================================================================== */
+.c-sim {
+  --range-pos: 0.4;
+  --dial-rotate: 108deg;
+  --toast-slice-crumb: var(--illu-bread-2);
+  --toast-slice-crust: var(--illu-bread-3);
+}
+
+.c-sim[data-value="1"] { --range-pos: 0;   --dial-rotate: 0deg; }
+.c-sim[data-value="2"] { --range-pos: 0.2; --dial-rotate: 54deg; }
+.c-sim[data-value="3"] { --range-pos: 0.4; --dial-rotate: 108deg; }
+.c-sim[data-value="4"] { --range-pos: 0.6; --dial-rotate: 162deg; }
+.c-sim[data-value="5"] { --range-pos: 0.8; --dial-rotate: 216deg; }
+.c-sim[data-value="6"] { --range-pos: 1;   --dial-rotate: 270deg; }
+
+.c-sim[data-value="1"],
+.c-sim[data-value="2"] { --toast-slice-crumb: var(--illu-bread-1); --toast-slice-crust: var(--illu-bread-3); }
+.c-sim[data-value="5"],
+.c-sim[data-value="6"] { --toast-slice-crumb: var(--illu-bread-3); --toast-slice-crust: var(--illu-bread-4); }
+
+.c-sim__figure > * + * { margin-top: var(--space-8); }
+
+.c-sim__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 17.5rem));
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-gap);
+}
+
+.c-sim__dial,
+.c-sim__slice { position: relative; }
+
+.c-sim__dial > svg,
+.c-sim__slice > svg { display: block; width: 100%; height: auto; }
+
+/* Цифры 1–6 снаружи рисок: HTML поверх SVG (позиции — illustration-guide §5, радиус 114) */
+.c-sim__nums {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-sim__nums > li {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+}
+
+/* Подписи-состояния (1–2 / 3–4 / 5–6); без JS — все три списком */
+.c-sim__states > * + * { margin-top: var(--space-4); }
+
+.c-sim__state {
+  font-size: var(--font-size-body-l);
+  line-height: var(--line-height-body);
+}
+
+.c-sim__state b { font-weight: var(--font-weight-semibold); }
+.c-sim__state .c-chip { margin-right: var(--space-2); vertical-align: 0.1em; }
+.c-sim__best { color: var(--color-accent); font-weight: var(--font-weight-medium); }
+
+/* Совет с жирным началом в строке («Простое правило:») */
+.c-callout__lead { color: var(--color-accent); font-weight: var(--font-weight-semibold); }
+
+/* ==========================================================================
+   c-range — ползунок в стиле бренда: крупный thumb 44px, заливка до значения
+   <div class="c-range"><input class="c-range__input" type="range" min="1" max="6" step="1">
+     <ol class="c-range__scale" aria-hidden="true"><li>1</li>…</ol></div>
+   Заливка — --range-pos (0…1), в курсе наследуется от c-sim (data-value).
+   Состояния витрины: is-hover / is-active / is-focus на .c-range.
+   ========================================================================== */
+.c-range { --range-track: 0.75rem; }
+
+.c-range__input {
+  display: block;
+  width: 100%;
+  height: var(--tap-target);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c-range__input:focus { outline: none; }
+
+.c-range__input::-webkit-slider-runnable-track {
+  height: var(--range-track);
+  border-radius: var(--radius-pill);
+  /* заливка до центра thumb: центр ходит в пределах [44/2; 100% − 44/2] */
+  background: linear-gradient(90deg,
+    var(--color-accent) 0,
+    var(--color-accent) calc(var(--tap-target) / 2 + (100% - var(--tap-target)) * var(--range-pos, 0)),
+    var(--color-bg-blue) 0);
+}
+
+.c-range__input::-moz-range-track {
+  height: var(--range-track);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-bg-blue);
+}
+
+.c-range__input::-moz-range-progress {
+  height: var(--range-track);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent);
+}
+
+.c-range__input::-webkit-slider-thumb {
+  width: var(--tap-target);
+  height: var(--tap-target);
+  margin-top: calc((var(--range-track) - var(--tap-target)) / 2);
+  border: 4px solid var(--color-bg);
+  border-radius: var(--radius-round);
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-m);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.c-range__input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border: 4px solid var(--color-bg);
+  border-radius: var(--radius-round);
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-m);
+  transition: transform var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.c-range__input:hover::-webkit-slider-thumb,
+.c-range.is-hover .c-range__input::-webkit-slider-thumb { background-color: var(--color-accent-hover); transform: scale(1.06); }
+.c-range__input:hover::-moz-range-thumb,
+.c-range.is-hover .c-range__input::-moz-range-thumb { background-color: var(--color-accent-hover); transform: scale(1.06); }
+
+.c-range__input:active::-webkit-slider-thumb,
+.c-range.is-active .c-range__input::-webkit-slider-thumb { background-color: var(--color-accent-active); transform: scale(0.96); }
+.c-range__input:active::-moz-range-thumb,
+.c-range.is-active .c-range__input::-moz-range-thumb { background-color: var(--color-accent-active); transform: scale(0.96); }
+
+.c-range__input:focus-visible::-webkit-slider-thumb,
+.c-range.is-focus .c-range__input::-webkit-slider-thumb { box-shadow: var(--focus-ring); }
+.c-range__input:focus-visible::-moz-range-thumb,
+.c-range.is-focus .c-range__input::-moz-range-thumb { box-shadow: var(--focus-ring); }
+
+/* Цифры шкалы — под центрами положений thumb */
+.c-range__scale {
+  display: flex;
+  justify-content: space-between;
+  margin: var(--space-2) 0 0;
+  padding: 0 calc((var(--tap-target) - 1.5rem) / 2);
+  list-style: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.c-range__scale > li { width: 1.5rem; text-align: center; }
+
+/* ==========================================================================
+   c-carousel — карусель шагов с кадрами (блок 5, data-interactive="load-scene")
+   <div class="c-carousel" data-current="1" role="region" aria-roledescription="карусель" aria-label="…">
+     <ol class="c-carousel__track" data-carousel-track>
+       <li class="c-carousel__slide" data-slide="1"><figure class="c-figure c-carousel__figure"><img …></figure>
+         <div class="c-carousel__text"><span class="c-carousel__num">01<span class="c-carousel__total"> / 04</span></span><p>…</p></div></li> …</ol>
+     <div class="c-carousel__controls" data-js-only> ← · 1 2 3 4 · → </div></div>
+   Без JS — слайды стопкой (все шаги видны). С JS — горизонтальная лента со scroll-snap: свайп работает нативно,
+   кнопки прокручивают ленту. Текущий шаг — aria-current="step" у номера, крайние стрелки — aria-disabled.
+   Мобила: кадр сверху, текст снизу; ≥1024 — текст слева, кадр справа (как l-split).
+   ========================================================================== */
+.c-carousel {
+  --carousel-gap: var(--space-6);        /* кадр → кнопки → текст (мобила) */
+  position: relative;                    /* для кнопок управления */
+}
+
+.c-carousel__track {
+  display: grid;
+  gap: var(--space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-carousel__slide {
+  display: grid;
+  gap: var(--carousel-gap);
+  align-content: start;
+}
+
+/* Квадратный кадр с привязкой к нижнему левому углу. Отступ — только слева и снизу (скругление карточки
+   не срезает тостер); сверху и справа отступа нет — рука входит из-за края карточки, а не обрывается
+   в воздухе (холст кадров тоже квадратный и привязан к низу-левому краю — tools/build-raster.py).
+   Размер: мобила — --carousel-figure-s по центру, ≥1024 — --carousel-figure-l справа. */
+.c-carousel__figure {
+  width: var(--carousel-figure-s);
+  max-width: 100%;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  padding: 0 0 var(--space-card) var(--space-card);
+  overflow: hidden;
+}
+
+.c-carousel__figure > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left bottom;
+}
+
+.c-carousel__num {
+  display: block;
+  margin-bottom: var(--space-3);
+  color: var(--color-accent);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--letter-spacing-heading);
+  line-height: 1;
+}
+
+.c-carousel__total { color: var(--color-text-muted); } /* не --color-secondary: «/ 04» 2.7:1 < 3:1 (этап 8) */
+
+.c-carousel__text {
+  font-size: var(--font-size-body-l);
+  line-height: 1.55;
+}
+
+.c-carousel__text b { font-weight: var(--font-weight-semibold); }
+
+@media (min-width: 1024px) {
+  .c-carousel { --carousel-gap: var(--space-8); }
+
+  .c-carousel__slide {
+    grid-template-columns: minmax(0, 1fr) var(--carousel-figure-l);
+    gap: var(--space-20);
+    align-items: start;
+  }
+
+  .c-carousel__figure { width: auto; margin-inline: 0; }
+  .c-carousel__text { order: -1; }
+}
+
+/* С JS: лента по одному слайду */
+.has-js .c-carousel__track {
+  display: flex;
+  gap: var(--space-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* место под тень карточки-кадра, иначе overflow её обрезает (сдвиг компенсирован отрицательным margin) */
+  padding-block: var(--space-2) var(--space-6);
+  margin-block: calc(-1 * var(--space-2)) calc(-1 * var(--space-6));
+}
+
+.has-js .c-carousel__track::-webkit-scrollbar { display: none; }
+
+.has-js .c-carousel__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Управление — общее для всех слайдов, стоит на одном месте:
+   мобила — между кадром и текстом шага, ≥1024 — в левой колонке над текстом.
+   Текст слайда освобождает под него место сверху (padding-top). */
+.c-carousel__controls {
+  position: absolute;
+  top: calc(var(--space-2) + var(--carousel-figure-s) + var(--carousel-gap)); /* --space-2 — верхний отступ ленты под тень */
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.has-js .c-carousel__text { padding-top: calc(var(--btn-height) + var(--carousel-gap)); }
+
+@media (min-width: 1024px) {
+  .c-carousel__controls {
+    top: var(--space-2);
+    right: auto;
+    justify-content: flex-start;
+  }
+}
+
+.c-carousel__arrow,
+.c-carousel__dot {
+  display: inline-grid;
+  place-items: center;
+  width: var(--btn-height);
+  height: var(--btn-height);
+  padding: 0;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-round);
+  background-color: var(--color-bg);
+  color: var(--color-accent);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.c-carousel__arrow--prev .c-icon { transform: scaleX(-1); }
+
+.c-carousel__dots { display: flex; gap: var(--space-2); }
+
+.c-carousel__dot {
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-color: transparent;
+  background-color: var(--color-bg-blue-light);
+}
+
+.c-carousel__arrow:hover,
+.c-carousel__dot:hover,
+.c-carousel__arrow.is-hover,
+.c-carousel__dot.is-hover { background-color: var(--color-bg-blue); }
+
+.c-carousel__arrow:active,
+.c-carousel__dot:active { transform: scale(0.94); }
+
+.c-carousel__arrow:focus-visible,
+.c-carousel__dot:focus-visible,
+.c-carousel__arrow.is-focus,
+.c-carousel__dot.is-focus { outline: none; box-shadow: var(--focus-ring); }
+
+.c-carousel__dot[aria-current="step"] {
+  background-color: var(--color-accent);
+  color: var(--color-on-dark);
+}
+
+.c-carousel__arrow[aria-disabled="true"] {
+  border-color: var(--color-line);
+  background-color: var(--color-bg);
+  color: var(--color-secondary);
+  cursor: default;
+  transform: none;
+}
+
+.c-carousel__before { margin-bottom: var(--space-8); } /* подсказка «Нажимай на стрелку…» над каруселью */
+.c-carousel__after { margin-top: var(--space-10); }
+
+/* ==========================================================================
+   c-order — «Расставь шаги по порядку» (блок 5, data-interactive="step-order")
+   <ol class="c-order"><li class="c-order__item" data-order="3">
+     <button class="c-order__card" type="button" aria-pressed="false">
+       <span class="c-order__handle" aria-hidden="true"><svg class="c-icon"><use href="#icon-drag"/></svg></span>
+       <span class="c-order__text">…</span>
+       <span class="u-visually-hidden c-order__step">, шаг </span><span class="c-order__num" data-order-num></span>
+       (номер входит в имя кнопки для экранного диктора: «…, шаг 3»; без номера «, шаг» скрыт)
+       <span class="u-visually-hidden c-order__status c-order__status--correct">— верно</span> (и --wrong)
+       <svg class="c-icon c-order__badge c-order__badge--correct" aria-hidden="true">…</svg> (и --wrong)
+     </button></li></ol>
+   Состояния: aria-pressed="true" (выбрана тапом, номер — в c-order__num), is-dragging (li «в руке»;
+   position: fixed и координаты ставит JS), li.is-placeholder — место вставки, aria-disabled="true" — после ответа,
+   is-correct / is-wrong на li (значок + текст для скринридера; без цветной заливки).
+   ========================================================================== */
+.c-order {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-order__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--icon-size-m) minmax(0, 1fr) var(--space-8);
+  gap: var(--space-3);
+  align-items: center;
+  width: 100%;
+  min-height: var(--tap-target);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-3);
+  border: 2px solid var(--color-line-light);
+  border-radius: var(--radius-s);
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-s);
+  font: inherit;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.c-order__handle {
+  display: grid;
+  place-items: center;
+  color: var(--color-secondary);
+  cursor: grab;
+}
+
+.c-order__card:hover,
+.c-order__card.is-hover { transform: translateY(-2px); box-shadow: var(--shadow-m); }
+
+.c-order__card:active,
+.c-order__card.is-active { transform: scale(0.98); box-shadow: var(--shadow-xs); }
+
+.c-order__card:focus-visible,
+.c-order__card.is-focus { outline: none; box-shadow: var(--focus-ring); }
+
+/* «, шаг» читается диктором только у пронумерованной карточки (этап 8, решение заказчика 14.10.2026) */
+.c-order__card:not([aria-pressed="true"]) .c-order__step { display: none; }
+
+/* Номер, присвоенный тапом: пустой — пунктирный кружок, выбран — синий круг с белой цифрой */
+.c-order__num {
+  grid-column: 3;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border: 2px dashed var(--color-line);
+  border-radius: var(--radius-round);
+  color: var(--color-on-dark);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.c-order__card[aria-pressed="true"] { border-color: var(--color-accent); }
+
+.c-order__card[aria-pressed="true"] .c-order__num {
+  border: 0;
+  background-color: var(--color-accent);
+}
+
+/* Перетаскивание: карточка «в руке» */
+.c-order__item.is-dragging .c-order__card {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-l);
+  transform: scale(1.02);
+  cursor: grabbing;
+}
+
+/* С JS: пальцем карточку тащат за ручку (остальная карточка прокручивает страницу), мышью — за всю.
+   Зона нажатия ручки — не меньше --tap-target */
+.has-js .c-order { -webkit-user-select: none; user-select: none; }
+
+.has-js .c-order__handle {
+  position: relative;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.has-js .c-order__handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  transform: translate(-50%, -50%);
+}
+
+/* Плейсхолдер на месте перетаскиваемой карточки (создаёт JS, высоту задаёт inline) */
+.c-order > .is-placeholder {
+  border: 2px dashed var(--color-line);
+  border-radius: var(--radius-s);
+  background-color: var(--color-bg-blue-light);
+}
+
+/* После верного ответа или показа правильного порядка карточки заблокированы */
+.c-order__card[aria-disabled="true"],
+.c-order__card[aria-disabled="true"] .c-order__handle { cursor: default; }
+
+.c-order__card[aria-disabled="true"]:hover { transform: none; box-shadow: var(--shadow-s); }
+.c-order__card[aria-disabled="true"]:active { transform: none; }
+
+/* Результат проверки: значок вместо номера, без цветной обводки и заливки */
+.c-order__badge,
+.c-order__status { display: none; }
+
+.c-order__badge {
+  grid-column: 3;
+  grid-row: 1;
+  width: var(--space-8);
+  height: var(--space-8);
+  animation: c-badge-pop var(--duration-slow) var(--ease-emphasized) 1;
+}
+
+.c-order__badge--correct { color: var(--color-success); }
+.c-order__badge--wrong { color: var(--color-error); }
+
+.c-order__item.is-correct .c-order__badge--correct,
+.c-order__item.is-wrong .c-order__badge--wrong { display: block; }
+
+.c-order__item.is-correct .c-order__status--correct,
+.c-order__item.is-wrong .c-order__status--wrong { display: inline; }
+
+.c-order__item.is-correct .c-order__num,
+.c-order__item.is-wrong .c-order__num { visibility: hidden; }
+
+.c-order__item.is-correct .c-order__card,
+.c-order__item.is-wrong .c-order__card { border-color: var(--color-line-light); cursor: default; }
+
+.c-order__item.is-wrong .c-order__card { animation: c-card-shake 0.4s var(--ease-standard) 1; }
+
+/* Правильный порядок: после двух неудачных попыток; без JS — виден сразу */
+.c-order-solution {
+  padding: var(--space-6);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-s);
+}
+
+.c-order-solution__title {
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-order-solution ol {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-6);
+  line-height: 1.6;
+}
+
+.c-order-solution li::marker {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-order__badge,
+  .c-order__item.is-wrong .c-order__card,
+  .has-js .c-hotspots__tip { animation: none; }
+}
+
+/* ==========================================================================
+   «Дальше» в подвале блока: <div class="c-block__next"><a class="c-btn c-btn--icon-end" href="#block-3"
+     data-next aria-disabled="true">…</a></div>. Без JS не блокируется — обычная ссылка.
+   ========================================================================== */
+.c-block__next { margin-top: var(--space-10); }
+
+html:not(.has-js) .c-btn[data-next][aria-disabled="true"] {
+  --btn-bg: var(--color-accent);
+  --btn-bg-hover: var(--color-accent-hover);
+  --btn-bg-active: var(--color-accent-active);
+  --btn-color: var(--color-on-dark);
+  --btn-icon-bg: var(--color-on-dark-veil);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   c-card--pick — карточка с картинкой для множественного выбора (блок 6, data-interactive="pick-tool")
+   <div class="c-choices c-choices--4"><button class="c-card c-card--interactive c-card--pick" aria-pressed="false">
+     <span class="c-card__check" aria-hidden="true">✓</span><img class="c-card__media" alt="">
+     <span class="c-card__text">…</span><span class="u-visually-hidden c-card__key">— можно</span>
+     и значки c-card__badge--correct/--incorrect — последними</button></div>
+   Попытка одна: после проверки варианты aria-disabled и на каждой карточке ключ — is-correct (безопасно) /
+   is-incorrect (опасно): значок справа + скрытый текст c-card__key; отметка пользователя остаётся в квадрате слева.
+   Без JS ключ виден сразу (по data-correct), квадрата нет.
+   ========================================================================== */
+.c-choices--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .c-choices--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.c-card--pick {
+  align-items: center;
+  padding: var(--space-4) var(--space-3) var(--space-5);
+  text-align: center;
+}
+
+.c-card--pick > * + * { margin-top: var(--space-2); }
+
+.c-card__media {
+  width: min(100%, var(--pick-media));
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.c-card--pick .c-card__text { line-height: 1.35; }
+
+/* Квадрат-«чекбокс» (слева; справа после проверки — значок ключа): пустой → синий с белой галочкой */
+.c-card__check {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin: 0;
+  border: 2px solid var(--color-line);
+  border-radius: var(--radius-xs);
+  background-color: var(--color-bg);
+  color: var(--color-on-dark);
+  transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard);
+}
+
+.c-card__check .c-icon {
+  width: var(--icon-size-s);
+  height: var(--icon-size-s);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.c-card--pick[aria-pressed="true"] .c-card__check,
+.c-card--pick.is-selected .c-card__check {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+}
+
+.c-card--pick[aria-pressed="true"] .c-card__check .c-icon,
+.c-card--pick.is-selected .c-card__check .c-icon { opacity: 1; }
+
+.c-card--pick .c-card__badge {
+  top: var(--space-3);
+  right: var(--space-3);
+  margin: 0;
+}
+
+.c-card--pick .c-card__badge,
+.c-card__key { display: none; }
+
+.c-card--pick.is-correct .c-card__badge--correct,
+.c-card--pick.is-incorrect .c-card__badge--incorrect { display: block; }
+
+.c-card--pick.is-correct .c-card__key,
+.c-card--pick.is-incorrect .c-card__key { display: inline; }
+
+/* Без JS: ответ виден сразу — значок по data-correct, квадрата нет */
+html:not(.has-js) [data-interactive] .c-card--pick { cursor: default; }
+html:not(.has-js) [data-interactive] .c-card--pick .c-card__check { display: none; }
+html:not(.has-js) [data-interactive] .c-card--pick[data-correct="true"] .c-card__badge--correct,
+html:not(.has-js) [data-interactive] .c-card--pick:not([data-correct]) .c-card__badge--incorrect { display: block; animation: none; }
+html:not(.has-js) [data-interactive] .c-card--pick .c-card__key { display: inline; }
+
+/* ==========================================================================
+   c-pair + c-verdict — пара иллюстраций «можно / нельзя» (блок 6)
+   <div class="c-pair"><figure class="c-figure c-pair__item"><img …>
+     <figcaption class="c-verdict c-verdict--yes"><svg class="c-icon">correct</svg>Можно</figcaption></figure>…</div>
+   Стопкой на мобиле, две колонки с 768.
+   ========================================================================== */
+.c-pair {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .c-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.c-pair__item > img { width: 100%; height: auto; }
+
+.c-verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-verdict--yes { color: var(--color-success-text); }
+.c-verdict--yes .c-icon { color: var(--color-success); }
+.c-verdict--no { color: var(--color-error-text); }
+.c-verdict--no .c-icon { color: var(--color-error); }
+
+/* ==========================================================================
+   c-flip — переворотная карточка (блок 7, data-interactive="flip-cards")
+   <div class="c-flips"><p class="c-flips__counter">Перевёрнуто: <span data-flip-count>0</span> из 4</p>
+     <ul class="c-flips__grid"><li class="c-flip">
+       <div class="c-flip__inner"><div class="c-flip__face c-flip__front">картинка, h3, «Переверни»</div>
+         <div class="c-flip__face c-flip__back" id="…">шаги, ⚠-строки</div></div>
+       <svg class="c-icon c-flip__done">correct</svg>
+       <button class="c-flip__btn" aria-expanded="false" aria-controls="…-back" aria-labelledby="…" data-js-only></button>
+     </li></ul></div>
+   Без JS: одна карточка, обе стороны подряд. С JS: стороны в одной ячейке, переворот rotateY за
+   --duration-slow по классу is-flipped; невидимая сторона — visibility: hidden (уходит из дерева доступности).
+   Кнопка — прозрачный слой на всю карточку. is-done — галочка в углу (перевёрнута хотя бы раз).
+   is-demo — 3D-режим без has-js (только витрина).
+   ========================================================================== */
+.c-block__body + .c-flips { margin-top: var(--space-8); }
+.c-flips > * + * { margin-top: var(--space-6); }
+.c-flips > .c-block__body { margin-top: var(--space-8); }
+
+.c-flips__counter {
+  font-size: var(--font-size-body-l);
+  color: var(--color-text-muted);
+}
+
+.c-flips__counter b {
+  color: var(--color-primary-900);
+  font-variant-numeric: tabular-nums;
+}
+
+.c-flips__grid {
+  display: grid;
+  gap: var(--space-gap);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .c-flips__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.c-flip {
+  position: relative;
+  display: grid;
+  perspective: var(--flip-perspective);
+}
+
+/* Рамка карточки: без JS — на общем контейнере, с JS — на каждой стороне */
+.c-flip__inner {
+  display: grid;
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card-l);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-s);
+}
+
+.c-flip__face {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-card);
+}
+
+.c-flip__back { border-top: 1px solid var(--color-line-light); }
+
+.c-flip__media { width: 100%; height: auto; }
+
+.c-flip__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.c-flip__icon {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  flex-shrink: 0;
+  border-radius: var(--radius-round);
+  background-color: var(--color-bg-blue);
+  color: var(--color-accent);
+}
+
+/* «Переверни» — правый нижний угол стороны */
+.c-flip__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-end;
+  margin-top: auto;
+  color: var(--color-accent);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-flip__lead {
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-semibold);
+}
+
+.c-flip__steps {
+  margin: 0;
+  padding-left: var(--space-6);
+  line-height: 1.5;
+}
+
+.c-flip__steps > li + li { margin-top: var(--space-2); }
+.c-flip__steps > li::marker { color: var(--color-accent); font-weight: var(--font-weight-semibold); }
+
+/* ⚠-строка оборота: иконка warning + текст --color-danger-text */
+.c-flip__warn {
+  display: grid;
+  grid-template-columns: var(--icon-size-m) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  color: var(--color-danger-text);
+  line-height: 1.5;
+}
+
+.c-flip__warn .c-icon {
+  color: var(--color-danger);
+  margin-top: calc((1.5em - var(--icon-size-m)) / 2);
+}
+
+/* 💡 на обороте — совет без иконки, синим */
+.c-flip__tip { color: var(--color-accent); line-height: 1.5; }
+
+.c-flip__done {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: var(--z-raised);
+  display: none;
+  width: var(--icon-size-l);
+  height: var(--icon-size-l);
+  color: var(--color-success);
+  pointer-events: none;
+}
+
+.c-flip.is-done .c-flip__done {
+  display: block;
+  animation: c-badge-pop var(--duration-slow) var(--ease-emphasized) 1;
+}
+
+.c-flip__btn {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card-l);
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.c-flip__btn:focus-visible,
+.c-flip.is-focus .c-flip__btn { outline: none; box-shadow: var(--focus-ring); }
+
+/* С JS: 3D-переворот */
+.has-js .c-flip__inner,
+.c-flip.is-demo .c-flip__inner {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--duration-slow) var(--ease-standard),
+    translate var(--duration-base) var(--ease-standard),
+    scale var(--duration-base) var(--ease-standard);
+}
+
+.has-js .c-flip__face,
+.c-flip.is-demo .c-flip__face {
+  grid-area: 1 / 1;
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card-l);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-s);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* невидимая сторона прячется на середине поворота */
+  transition: visibility 0s linear calc(var(--duration-slow) / 2), box-shadow var(--duration-base) var(--ease-standard);
+}
+
+.has-js .c-flip__back,
+.c-flip.is-demo .c-flip__back {
+  visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.has-js .c-flip.is-flipped .c-flip__inner,
+.c-flip.is-demo.is-flipped .c-flip__inner { transform: rotateY(180deg); }
+
+.has-js .c-flip.is-flipped .c-flip__front,
+.c-flip.is-demo.is-flipped .c-flip__front { visibility: hidden; }
+
+.has-js .c-flip.is-flipped .c-flip__back,
+.c-flip.is-demo.is-flipped .c-flip__back { visibility: visible; }
+
+.has-js .c-flip:hover .c-flip__inner,
+.c-flip.is-hover .c-flip__inner { translate: 0 -2px; }
+
+.has-js .c-flip:hover .c-flip__face,
+.c-flip.is-hover .c-flip__face { box-shadow: var(--shadow-m); }
+
+.has-js .c-flip:active .c-flip__inner { scale: 0.98; }
+
+@media (prefers-reduced-motion: reduce) {
+  .c-flip.is-done .c-flip__done { animation: none; }
+}
+
+/* ==========================================================================
+   c-sort — игра «Можно / Нельзя» (блок 8, data-interactive="sort-game")
+   <div class="c-sort">
+     <div class="c-sort__zone c-sort__zone--no" data-zone="no" data-js-only><p class="c-sort__label">…</p>
+       <ul class="c-sort__list" data-zone-list="no"></ul></div>
+     <ol class="c-sort__stack" data-sort-stack><li class="c-sort__card" data-card="1" data-zone="no">
+       иконка, текст, чип-ответ (без JS), статусы, пояснение [data-explain], кнопки «Нельзя» / «Можно»</li></ol>
+     <div class="c-sort__zone c-sort__zone--yes" …></div></div>
+   Мобила: стопка сверху, зоны «Нельзя» слева и «Можно» справа под ней; ≥1024 — «Нельзя | стопка | Можно».
+   С JS видна только первая карточка стопки (под ней — «листы» стопки), разложенные — в списках зон.
+   Состояния карточки: is-dragging (+ --drag-x / --drag-y / --drag-rotate), is-correct / is-wrong
+   (вспышка + скрытый текст статуса); зона: is-drop-target. Без JS — список карточек с ответом и пояснением.
+   ========================================================================== */
+.c-sort {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "stack stack" "no yes";
+  align-items: start;
+  max-width: var(--content-max);
+  margin-top: var(--space-10);
+  /* перетаскиваемая карточка не даёт горизонтального скролла; вспышка-обводка остаётся видна */
+  overflow-x: clip;
+  overflow-clip-margin: var(--space-3);
+}
+
+html:not(.has-js) .c-sort[data-interactive] { display: block; max-width: none; }
+
+@media (min-width: 1024px) {
+  .c-sort {
+    max-width: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-areas: "no stack yes";
+    gap: var(--space-gap);
+  }
+}
+
+.c-sort > .c-sort__zone--no { grid-area: no; }
+.c-sort > .c-sort__zone--yes { grid-area: yes; }
+.c-sort > .c-sort__stack { grid-area: stack; }
+
+.c-sort + .c-block__body { margin-top: var(--space-8); }
+.c-sort + .c-block__body > * + * { margin-top: var(--space-6); }
+
+/* Зона: белая, пунктир цвета зоны («Нельзя» — коралловый --color-danger, разрешён для зоны «Нельзя») */
+.c-sort__zone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 11rem;
+  padding: var(--space-4);
+  border: 2px dashed var(--zone-line);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  transition: border-color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.c-sort__zone--no { --zone-line: var(--color-danger-line); --zone-accent: var(--color-danger); --zone-text: var(--color-danger-text); }
+.c-sort__zone--yes { --zone-line: var(--color-success-line); --zone-accent: var(--color-success); --zone-text: var(--color-success-text); }
+
+.c-sort__zone.is-drop-target {
+  border-style: solid;
+  border-color: var(--zone-accent);
+  background-color: var(--color-danger-bg);
+}
+
+.c-sort__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--zone-text);
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading);
+}
+
+.c-sort__label .c-icon { width: var(--icon-size-l); height: var(--icon-size-l); color: var(--zone-accent); }
+
+.c-sort__list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Стопка */
+.c-sort__stack {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  html:not(.has-js) [data-interactive] > .c-sort__stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Карточка (без JS и в стопке) */
+.c-sort__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3) var(--space-4);
+  align-items: center;
+  align-content: start;
+  padding: var(--space-card);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-s);
+}
+
+.c-sort__icon {
+  width: var(--space-12);
+  height: var(--space-12);
+  color: var(--color-primary-900);
+}
+
+.c-sort__text {
+  font-size: var(--font-size-body-l);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.c-sort__answer { grid-column: 2; justify-self: start; }
+
+.c-sort__explain {
+  grid-column: 1 / -1;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.c-sort__actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.c-sort__btn { padding-inline: var(--space-3); }
+.c-sort__btn--no .c-icon { color: var(--color-danger); }
+.c-sort__btn--yes .c-icon { color: var(--color-success); }
+
+.c-sort__status { display: none; }
+.c-sort__card.is-correct .c-sort__status--correct,
+.c-sort__card.is-wrong .c-sort__status--wrong { display: inline; }
+
+/* С JS: верхняя карточка крупно, под ней — «листы» стопки, остальные скрыты */
+.has-js .c-sort__stack {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: var(--space-4);
+}
+
+.has-js .c-sort__stack > .c-sort__card:not(:first-child) { display: none; }
+
+.has-js .c-sort__stack > .c-sort__card,
+.c-sort__card.is-top {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-m);
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none; /* перетаскивание мышью не выделяет текст */
+}
+
+.has-js .c-sort__stack > .c-sort__card .c-sort__explain,
+.has-js .c-sort__stack > .c-sort__card .c-sort__actions,
+.c-sort__card.is-top .c-sort__explain,
+.c-sort__card.is-top .c-sort__actions { grid-column: auto; justify-self: stretch; }
+
+.has-js .c-sort__stack:has(> .c-sort__card + .c-sort__card)::before,
+.has-js .c-sort__stack:has(> .c-sort__card + .c-sort__card + .c-sort__card)::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  height: var(--space-12);
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-card);
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-xs);
+}
+
+.has-js .c-sort__stack:has(> .c-sort__card + .c-sort__card)::before { left: var(--space-3); right: var(--space-3); bottom: var(--space-2); }
+.has-js .c-sort__stack:has(> .c-sort__card + .c-sort__card + .c-sort__card)::after { left: var(--space-6); right: var(--space-6); bottom: 0; z-index: -2; }
+
+/* Разложенная карточка в зоне — компактно, без кнопок.
+   Мобила (зоны по ~160px): иконка над текстом, иначе текст ломается по слову; с 768 — иконка слева */
+.c-sort__list > .c-sort__card {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-xs);
+  font-size: var(--font-size-caption);
+}
+
+.c-sort__list .c-sort__icon { width: var(--icon-size-m); height: var(--icon-size-m); }
+
+@media (min-width: 768px) {
+  .c-sort__list > .c-sort__card { grid-template-columns: var(--icon-size-l) minmax(0, 1fr); }
+  .c-sort__list .c-sort__icon { width: var(--icon-size-l); height: var(--icon-size-l); }
+}
+.c-sort__list .c-sort__text { font-size: var(--font-size-body); }
+.c-sort__list .c-sort__explain { grid-column: 1 / -1; }
+.c-sort__list .c-sort__actions { display: none; }
+
+/* Перетаскивание / свайп: смещение и наклон задаёт JS через --drag-x / --drag-y / --drag-rotate */
+.c-sort__card.is-dragging {
+  z-index: var(--z-raised);
+  box-shadow: var(--shadow-l);
+  translate: var(--drag-x, 0) var(--drag-y, 0);
+  rotate: var(--drag-rotate, 0deg);
+  cursor: grabbing;
+}
+
+/* Ответ: короткая вспышка мятным / коралловым + скрытый текст статуса; неверная ещё и вздрагивает */
+.c-sort__card.is-correct { animation: c-sort-flash-correct var(--duration-slow) var(--ease-out) 1; }
+
+.c-sort__card.is-wrong {
+  animation:
+    c-sort-flash-wrong var(--duration-slow) var(--ease-out) 1,
+    c-card-shake 0.4s var(--ease-standard) 1;
+}
+
+@keyframes c-sort-flash-correct {
+  0% { box-shadow: 0 0 0 0 var(--color-success); }
+  35% { box-shadow: 0 0 0 6px var(--color-success); }
+  100% { box-shadow: var(--shadow-s); }
+}
+
+@keyframes c-sort-flash-wrong {
+  0% { box-shadow: 0 0 0 0 var(--color-error); }
+  35% { box-shadow: 0 0 0 6px var(--color-error); }
+  100% { box-shadow: var(--shadow-s); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-sort__card.is-correct,
+  .c-sort__card.is-wrong { animation: none; }
+}
+
+/* ==========================================================================
+   c-result + c-badge — итог курса и бейдж (блок 9, data-interactive="badge")
+   <div class="c-figure c-result"><p class="c-result__score">Твой результат: <b><span data-crumbs-value>0</span> из 15</b></p>
+     <div class="c-badge" data-badge="master"><img class="c-badge__img" alt=""><p class="c-badge__name">…</p></div>
+     <div class="c-badge c-badge--not-yet" data-badge="not-yet" hidden><span class="c-badge__face">face-meh</span>
+     «Ещё не мастер», c-badge__text</div></div>
+   В разметке оба варианта, один hidden — выбирает этап 7. Смайл — как на карточке «Тост получился бледным»
+   (белый круг с тенью, линейный face-meh цвета primary-900).
+   ========================================================================== */
+.c-result {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  text-align: center;
+}
+
+.c-result__score {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-l);
+}
+
+.c-result__score b {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  color: var(--color-primary-900);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-display);
+}
+
+.c-result__score b .c-icon { width: 0.9em; height: 0.9em; }
+
+.c-badge {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+}
+
+.c-badge__img {
+  width: min(100%, var(--badge-size));
+  height: auto;
+}
+
+.c-badge__name {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.c-badge__name .c-icon { color: var(--color-accent); }
+
+.c-badge__text {
+  max-width: 28ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-l);
+}
+
+.c-badge .c-btn { margin-top: var(--space-3); }
+
+/* Конфетти «Мастер тоста»: слой частиц поверх карточки итога (создаёт и удаляет badge.js, aria-hidden).
+   Частица: --dx/--dy (−1…1) — направление разлёта, --spin — вращение, --delay (0…1) — доля задержки.
+   Цвета — тостовая шкала; длительность с задержкой ≤ 2 с; при reduced-motion конфетти нет. */
+.c-confetti {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.c-confetti__bit {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: var(--space-2);
+  height: var(--space-3);
+  border-radius: calc(var(--radius-xs) / 4);
+  background-color: var(--toast-3);
+  opacity: 0;
+  animation: c-confetti-fly var(--duration-confetti) var(--ease-out) calc(var(--duration-fast) * var(--delay, 0)) both;
+}
+
+.c-confetti__bit:nth-child(4n + 2) { background-color: var(--toast-4); border-radius: var(--radius-round); }
+.c-confetti__bit:nth-child(4n + 3) { background-color: var(--toast-outline); width: var(--space-3); height: var(--space-2); }
+.c-confetti__bit:nth-child(4n + 4) { background-color: var(--toast-crust); }
+
+@keyframes c-confetti-fly {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4) rotate(0); }
+  60% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx) * var(--confetti-spread)), calc(-50% + var(--dy) * var(--confetti-spread) + var(--space-16)))
+      scale(1) rotate(calc(var(--spin) * 2turn));
+  }
+}
+
+/* «Ещё не мастер»: вместо медали — грустный смайл в белом круге */
+.c-badge__face {
+  display: grid;
+  place-items: center;
+  width: calc(var(--badge-size) * 0.7);
+  height: calc(var(--badge-size) * 0.7);
+  max-width: 100%;
+  border: 1px solid var(--color-line-light);
+  border-radius: var(--radius-round);
+  background-color: var(--color-bg);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-m);
+}
+
+.c-badge__face .c-icon { width: 55%; height: 55%; }
+
+/* «Приятного аппетита!» — крупная строка с иконками тоста и кофе */
+.c-bon-appetit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.c-bon-appetit__icons { display: inline-flex; gap: var(--space-1); color: var(--color-accent); }
+.c-bon-appetit__icons .c-icon { width: var(--icon-size-l); height: var(--icon-size-l); }
+
+/* ==========================================================================
+   c-footer + c-sources — подвал с раскрывающимся списком источников
+   <footer class="c-footer"><div class="l-container"><details class="c-sources">
+     <summary class="c-sources__summary"><svg class="c-icon c-sources__icon">arrow</svg>Источники</summary>
+     <div class="c-sources__body">…</div></details></div></footer>
+   ========================================================================== */
+.c-footer {
+  padding-block: var(--space-8) var(--space-12);
+  border-top: 1px solid var(--color-line-light);
+  background-color: var(--color-bg-soft);
+}
+
+.c-sources { max-width: var(--content-max); }
+
+.c-sources__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-target);
+  padding-inline: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+  list-style: none;
+  cursor: pointer;
+}
+
+.c-sources__summary::-webkit-details-marker { display: none; }
+.c-sources__summary:hover { background-color: var(--color-bg-blue-light); }
+.c-sources__summary:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+.c-sources__icon {
+  width: var(--icon-size-s);
+  height: var(--icon-size-s);
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+.c-sources[open] .c-sources__icon { transform: rotate(90deg); }
+
+.c-sources__body {
+  margin-top: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  line-height: 1.6;
+}
+
+.c-sources__body ol {
+  margin: var(--space-2) 0 0;
+  padding-left: var(--space-6);
+}
+
+.c-sources__body li + li { margin-top: var(--space-2); }

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360">
+<defs><linearGradient id="situation-smoke-g-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E58C9"/><stop offset=".62" stop-color="#3E58C9"/><stop offset="1" stop-color="#2B40A6"/></linearGradient>
+<linearGradient id="situation-smoke-g-top" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7189E3"/><stop offset="1" stop-color="#3E58C9"/></linearGradient>
+<clipPath id="situation-smoke-clip"><path d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/></clipPath><linearGradient id="situation-smoke-g-smoke" gradientUnits="userSpaceOnUse" x1="0" y1="170" x2="0" y2="10"><stop offset="0" stop-color="#8E9AB0" stop-opacity=".85"/><stop offset="1" stop-color="#8E9AB0" stop-opacity=".2"/></linearGradient></defs><g id="situation-smoke-toaster" transform="translate(48 98) scale(.7)">
+<path id="situation-smoke-shadow" fill="#BCCADC" d="M50 304Q50 316 64 316H352Q364 316 374 308L448 252Q456 244 444 244H150Z"/>
+<g id="situation-smoke-body">
+<rect x="76" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="296" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="392" y="242" width="24" height="13" rx="5" fill="#131F5D"/>
+<path fill="#2B40A6" d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/>
+<path clip-path="url(#situation-smoke-clip)" fill="url(#situation-smoke-g-top)" d="M60 120L144 56H424L340 120Z"/>
+<path d="M417 82V206" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+<path id="situation-smoke-groove" d="M382 118V214" stroke="#131F5D" stroke-width="6" stroke-linecap="round"/>
+</g>
+<g id="situation-smoke-slots">
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M122.2 85.4H368.6L390.4 68.8H144Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M131.1 82.9H366.3L381.4 71.4H146.2Z"/>
+<path fill="#AFBDD2" d="M139 77.1H374.6L381.4 71.4H146.2Z"/>
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M90.2 109.8H336.6L358.5 93.1H112.1Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M99.2 107.2H334.4L349.5 95.7H114.3Z"/>
+<path fill="#AFBDD2" d="M106.8 101.4H342L349.5 95.7H114.3Z"/>
+</g>
+<g id="situation-smoke-glow">
+<path fill="#E8622C" d="M134 82.4H364L371 77.1H141Z"/>
+<path fill="#FFB45E" d="M150 81H352L355 78.6H153Z"/>
+<path fill="#E8622C" d="M102 106.7H332L339 101.4H109Z"/>
+<path fill="#FFB45E" d="M118 105.3H320L323 102.9H121Z"/>
+</g>
+
+<g id="situation-smoke-front">
+<rect x="60" y="120" width="280" height="180" rx="22" fill="url(#situation-smoke-g-front)"/>
+<path d="M84 122H316" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="3" stroke-linecap="round"/>
+<rect x="78" y="140" width="10" height="122" rx="5" fill="#FFFFFF" opacity=".16"/>
+</g>
+<g id="situation-smoke-knob">
+<g fill="#E9EFF6"><circle cx="264.5" cy="197.5" r="2.6"/><circle cx="254.4" cy="166.4" r="2.6"/><circle cx="273.7" cy="139.9" r="2.6"/><circle cx="306.3" cy="139.9" r="2.6"/><circle cx="325.6" cy="166.4" r="2.6"/><circle cx="315.5" cy="197.5" r="2.6"/></g>
+<circle cx="290" cy="175" r="24" fill="#AFBDD2"/>
+<circle cx="290" cy="172" r="24" fill="#E9EFF6"/>
+<circle cx="290" cy="172" r="15" fill="#FFFFFF" opacity=".7"/>
+<path id="situation-smoke-knob-pointer" d="M287.7 167.5L281.8 156" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-smoke-stop">
+<rect x="268" y="247" width="44" height="22" rx="11" fill="#AFBDD2"/>
+<rect x="268" y="244" width="44" height="22" rx="11" fill="#E9EFF6"/>
+<path d="M285.5 250.5L294.5 259.5M294.5 250.5L285.5 259.5" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-smoke-tray">
+<rect x="96" y="289" width="140" height="18" rx="7" fill="#AFBDD2"/>
+<rect x="96" y="286" width="140" height="17" rx="7" fill="#E9EFF6"/>
+<rect x="148" y="293" width="36" height="5" rx="2.5" fill="#AFBDD2"/>
+</g>
+<g id="situation-smoke-lever" transform="translate(0 80)">
+<rect x="376" y="119" width="62" height="20" rx="8" fill="#131F5D"/>
+<rect x="381" y="122" width="52" height="4" rx="2" fill="#FFFFFF" opacity=".2"/>
+</g>
+</g><g id="situation-smoke-smoke"><path fill="url(#situation-smoke-g-smoke)" d="M242.3 150C238.9 147.9 242.3 141.7 242.9 137.6C243.5 133.4 245.6 129.3 245.9 125.1C246.3 121 247.1 116.8 245.1 112.7C243.2 108.5 238.3 104.4 234.2 100.2C230.2 96.1 223.9 91.9 220.7 87.8C217.5 83.6 216.4 79.5 215.1 75.3C213.8 71.2 214.5 67 212.9 62.9C211.4 58.7 207.8 54.6 205.9 50.4C204.1 46.3 195.9 44 201.8 38C207.7 32 228.1 14.2 241.2 14.2C254.3 14.2 276 32 280.6 38C285.2 44 271.8 46.3 268.8 50.4C265.8 54.6 262.5 58.7 262.7 62.9C262.9 67 267.2 71.2 269.9 75.3C272.5 79.5 277 83.6 278.7 87.8C280.3 91.9 279.7 96.1 279.8 100.2C279.8 104.4 278.7 108.5 278.7 112.7C278.7 116.8 280.1 121 279.6 125.1C279.1 129.3 278.4 133.4 275.6 137.6C272.8 141.7 268.5 147.9 262.9 150C257.3 152.1 245.6 152.1 242.3 150Z"/><path fill="url(#situation-smoke-g-smoke)" d="M174.7 168C170.5 166.2 170.3 160.9 168.1 157.3C165.8 153.8 162.7 150.2 161.2 146.7C159.7 143.1 158.3 139.6 159 136C159.7 132.4 163.1 128.9 165.4 125.3C167.7 121.8 171.4 118.2 172.6 114.7C173.9 111.1 173.2 107.6 172.9 104C172.6 100.4 171.1 96.9 171.1 93.3C171.1 89.8 173 86.2 173 82.7C173.1 79.1 167.9 76.9 171.4 72C174.9 67.1 186.5 53.1 194.1 53.1C201.6 53.1 211.9 67.1 216.7 72C221.6 76.9 221.7 79.1 223.3 82.7C224.9 86.2 227.3 89.8 226.5 93.3C225.7 96.9 221.7 100.4 218.5 104C215.4 107.6 210.2 111.1 207.4 114.7C204.6 118.2 203.3 121.8 201.9 125.3C200.4 128.9 199.9 132.4 198.4 136C196.9 139.6 194.2 143.1 192.8 146.7C191.4 150.2 189.9 153.8 190 157.3C190.1 160.9 196.1 166.2 193.6 168C191 169.8 179 169.8 174.7 168Z"/></g>
+</svg>

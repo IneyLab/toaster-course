@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360">
+<defs><linearGradient id="situation-stuck-g-front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E58C9"/><stop offset=".62" stop-color="#3E58C9"/><stop offset="1" stop-color="#2B40A6"/></linearGradient>
+<linearGradient id="situation-stuck-g-top" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7189E3"/><stop offset="1" stop-color="#3E58C9"/></linearGradient>
+<clipPath id="situation-stuck-clip"><path d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/></clipPath><clipPath id="situation-stuck-clip-bread"><rect x="99.2" y="-200" width="250" height="307.2"/></clipPath></defs><g id="situation-stuck-toaster" transform="translate(48 98) scale(.7)">
+<path id="situation-stuck-shadow" fill="#BCCADC" d="M50 304Q50 316 64 316H352Q364 316 374 308L448 252Q456 244 444 244H150Z"/>
+<g id="situation-stuck-body">
+<rect x="76" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="296" y="296" width="30" height="14" rx="6" fill="#131F5D"/>
+<rect x="392" y="242" width="24" height="13" rx="5" fill="#131F5D"/>
+<path fill="#2B40A6" d="M60 142Q60 120 77.5 106.7L126.5 69.3Q144 56 166 56H402Q424 56 424 78V214Q424 236 406.5 249.3L357.5 286.7Q340 300 318 300H82Q60 300 60 278Z"/>
+<path clip-path="url(#situation-stuck-clip)" fill="url(#situation-stuck-g-top)" d="M60 120L144 56H424L340 120Z"/>
+<path d="M417 82V206" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+<path id="situation-stuck-groove" d="M382 118V214" stroke="#131F5D" stroke-width="6" stroke-linecap="round"/>
+</g>
+<g id="situation-stuck-slots">
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M122.2 85.4H368.6L390.4 68.8H144Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M131.1 82.9H366.3L381.4 71.4H146.2Z"/>
+<path fill="#AFBDD2" d="M139 77.1H374.6L381.4 71.4H146.2Z"/>
+<path fill="#E9EFF6" stroke="#E9EFF6" stroke-width="6" stroke-linejoin="round" d="M90.2 109.8H336.6L358.5 93.1H112.1Z"/>
+<path fill="#131F5D" stroke="#131F5D" stroke-width="3" stroke-linejoin="round" d="M99.2 107.2H334.4L349.5 95.7H114.3Z"/>
+<path fill="#AFBDD2" d="M106.8 101.4H342L349.5 95.7H114.3Z"/>
+</g>
+<g id="situation-stuck-glow" opacity="0">
+<path fill="#E8622C" d="M134 82.4H364L371 77.1H141Z"/>
+<path fill="#FFB45E" d="M150 81H352L355 78.6H153Z"/>
+<path fill="#E8622C" d="M102 106.7H332L339 101.4H109Z"/>
+<path fill="#FFB45E" d="M118 105.3H320L323 102.9H121Z"/>
+</g>
+<g id="situation-stuck-bread" clip-path="url(#situation-stuck-clip-bread)"><g transform="rotate(-11 224 107.2)"><g><path fill="#B57434" d="M147.4 135.9V91.9C134.8 84.1 134.8 50.3 172.6 43C206.2 37.3 256.6 37.3 290.2 43C328 50.3 328 84.1 315.4 91.9V135.9Z"/><path fill="#B57434" d="M140.4 141.2V97.2C127.8 89.4 127.8 55.6 165.6 48.3C199.2 42.6 249.6 42.6 283.2 48.3C321 55.6 321 89.4 308.4 97.2V141.2Z"/><path fill="#E0AE5C" d="M147.4 142.2V98.2C135.9 91.4 135.9 62.2 170.5 55.9C201.3 50.9 247.5 50.9 278.3 55.9C312.9 62.2 312.9 91.4 301.4 98.2V142.2Z"/></g></g></g>
+<g id="situation-stuck-front">
+<rect x="60" y="120" width="280" height="180" rx="22" fill="url(#situation-stuck-g-front)"/>
+<path d="M84 122H316" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="3" stroke-linecap="round"/>
+<rect x="78" y="140" width="10" height="122" rx="5" fill="#FFFFFF" opacity=".16"/>
+</g>
+<g id="situation-stuck-knob">
+<g fill="#E9EFF6"><circle cx="264.5" cy="197.5" r="2.6"/><circle cx="254.4" cy="166.4" r="2.6"/><circle cx="273.7" cy="139.9" r="2.6"/><circle cx="306.3" cy="139.9" r="2.6"/><circle cx="325.6" cy="166.4" r="2.6"/><circle cx="315.5" cy="197.5" r="2.6"/></g>
+<circle cx="290" cy="175" r="24" fill="#AFBDD2"/>
+<circle cx="290" cy="172" r="24" fill="#E9EFF6"/>
+<circle cx="290" cy="172" r="15" fill="#FFFFFF" opacity=".7"/>
+<path id="situation-stuck-knob-pointer" d="M287.7 167.5L281.8 156" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-stuck-stop">
+<rect x="268" y="247" width="44" height="22" rx="11" fill="#AFBDD2"/>
+<rect x="268" y="244" width="44" height="22" rx="11" fill="#E9EFF6"/>
+<path d="M285.5 250.5L294.5 259.5M294.5 250.5L285.5 259.5" stroke="#131F5D" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="situation-stuck-tray">
+<rect x="96" y="289" width="140" height="18" rx="7" fill="#AFBDD2"/>
+<rect x="96" y="286" width="140" height="17" rx="7" fill="#E9EFF6"/>
+<rect x="148" y="293" width="36" height="5" rx="2.5" fill="#AFBDD2"/>
+</g>
+<g id="situation-stuck-lever">
+<rect x="376" y="119" width="62" height="20" rx="8" fill="#131F5D"/>
+<rect x="381" y="122" width="52" height="4" rx="2" fill="#FFFFFF" opacity=".2"/>
+</g>
+</g>
+</svg>

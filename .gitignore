@@ -1,0 +1,31 @@
+# Репозиторий — только файлы самого курса (список разрешённого, как в .vercelignore):
+# сценарий, документы, инструменты, витрина, личные и служебные файлы не публикуются.
+/*
+!/.gitignore
+!/.vercelignore
+!/vercel.json
+!/index.html
+!/css/
+!/js/
+!/assets/
+/assets/*
+!/assets/memo.pdf
+!/assets/fonts/
+/assets/fonts/*
+!/assets/fonts/OFL.txt
+!/assets/icons/
+/assets/icons/*
+!/assets/icons/crumb.svg
+!/assets/img/
+/assets/img/*
+!/assets/img/badge-master.svg
+!/assets/img/cover.svg
+!/assets/img/load-scene-*.webp
+!/assets/img/pick-fingers.webp
+!/assets/img/pick-fork.svg
+!/assets/img/pick-knife.svg
+!/assets/img/pick-tongs.svg
+!/assets/img/situation-*.svg
+!/assets/img/take-fork.svg
+!/assets/img/take-tongs.webp
+/js/interactives/.gitkeep
